@@ -1,0 +1,40 @@
+Org Chart by TCViz 1.0.0.0 - GUID orgChartTCVizB36215279C0F4E9B93D25094C04F6842
+
+SOURCE CODE
+github.com/tinocallarisa-web/org-chart, branch "certification".
+PUBLIC: no credentials needed, none included here.
+
+NO KEY NEEDED
+The visual is free: no licence, no IVisualLicenseManager, no paid features, nothing to
+unlock. Every feature works in the submitted package.
+
+PACKAGE WARNING - FetchMoreData
+pbiviz only detects fetchMoreData in table mappings. This visual uses a categorical
+mapping (window 30000) and calls host.fetchMoreData(true) in src/visual.ts
+(streamSegments), with Append handling and a 60-round cap. In Desktop the warning icon
+explains that only the first segment arrives.
+
+RENDERING EVENTS: one started/finished-or-failed pair per update(). Clicks, collapse,
+search and zoom redraw without calling update() and without rendering events.
+PERSISTED STATE: open branches and focused team are saved with persistProperties
+(object "state", a short JSON of Employee IDs). Never called during a bookmark restore.
+PRIVACY: privileges []. No network calls, no telemetry. Photos are Base64 only; the
+landing page link uses host.launchUrl.
+
+FEATURES
+Employee ID + Manager ID tree (any depth, loops/duplicates/missing managers handled and
+shown with the warning icon), dotted-line managers, vacancies, photos, team size and
+team value. Selection of a person or whole team, Ctrl+click, highlight, bookmarks
+(registerOnSelectCallback), tooltips and report page tooltips, context menu, fx on card
+colour, keyboard tree navigation with ARIA tree roles, high contrast, on-object
+formatting, landing page, 12 locales.
+
+WHAT TO CHECK
+1. Employee ID and Manager ID: the chart draws from the top; folded cards show +N.
+2. Click a manager: the page filters by the whole team. Click again: cleared.
+3. Card corner button: only that team, breadcrumb on top; click Everyone to return.
+4. Toolbar: search a name; one level down/up; expand/collapse all.
+5. Save a bookmark with a selection, clear, apply: same people selected and shown.
+6. Format mode: click a name, a card, a line: on-object panes open.
+
+Support: tinocallarisa-web.github.io/org-chart/support.html

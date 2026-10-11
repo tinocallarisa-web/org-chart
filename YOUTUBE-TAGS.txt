@@ -1,0 +1,14 @@
+=========================================================
+ORG CHART BY TCVIZ — YouTube Tags (v1.0.0.0)
+Video: https://www.youtube.com/watch?v=l4t8RYL8Lgw
+=========================================================
+
+--- MAIN TAG BLOCK (YouTube's limit is 500) ---
+
+power bi,power bi org chart,org chart,organization chart,organizational chart,power bi custom visual,free power bi visual,org chart power bi free,hierarchy chart,employee hierarchy,reporting structure,parent child hierarchy,power bi hr dashboard,hr analytics,span of control,power bi no dax,power bi visuals,tcviz
+
+Notes:
+- "power bi org chart", "org chart" and "organization chart" carry the search.
+- "parent child hierarchy" catches people who already have the employee/manager table and do not
+  know what the chart is called in Power BI.
+- "power bi hr dashboard", "hr analytics", "span of control": the HR audience that builds these reports.

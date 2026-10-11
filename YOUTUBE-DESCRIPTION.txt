@@ -1,0 +1,58 @@
+=========================================================
+ORG CHART BY TCVIZ — YouTube Description (v1.0.0.0)
+Video: https://www.youtube.com/watch?v=l4t8RYL8Lgw
+Sin los signos menor/mayor en la descripción: YouTube la rechaza (pasó con Histogram).
+=========================================================
+
+--- TITLE ---
+
+Free Org Chart for Power BI — Photos, Search and Breadcrumb Navigation, No DAX
+
+(78 characters. "Free" first, "Org Chart for Power BI" is the search, "No DAX" the same pattern as the
+other TCViz videos.)
+
+Alternatives:
+- Power BI Org Chart: Build It From Two Columns (Free Visual)
+- How to Make an Org Chart in Power BI — Free, With Photos and Search
+
+
+--- DESCRIPTION ---
+
+An org chart should answer two questions in a second: who reports to whom, and how big each team is. With a large organisation, most charts either shrink to text nobody can read or need a column for every level.
+
+Org Chart by TCViz is free — every feature, no licence, no limit on people, no watermark. Two columns draw it: the employee ID and the manager ID. Add names, job titles, departments and photos, and it opens as many levels as fit on screen with every name still readable.
+
+WHAT YOU SEE IN THIS VIDEO
+• Two fields, any depth: Employee ID and Manager ID
+• Photos, job titles, departments and team size on every card
+• Style templates and department colours
+• Show only one team, with the breadcrumb to go back up
+• Search: the chart opens the branch and finds the person
+• Opening and closing one level at a time, the minimap and zoom
+• Dotted-line managers for matrix teams
+• Clicking a manager filters the whole report by their team
+• Formatting directly on the canvas
+
+WHAT IT DOES
+• Employee and manager IDs, any number of levels, several tops
+• Vacancies from rows without a name; dotted-line reporting as a second set of links
+• Team size (direct reports and whole team) and a measure added up for each manager
+• Compact layout so wide teams fit; top to bottom or left to right
+• Colour by department, level or value; tinted cards; department groups
+• Reporting loops, repeated IDs and missing managers are handled and reported
+• Bookmarks, report page tooltips, conditional formatting, keyboard navigation, high contrast
+• Format pane in 12 languages
+• No network access: photos stay in your model, nothing leaves your report
+
+LINKS
+Documentation and FAQ: https://tinocallarisa-web.github.io/org-chart/support.html
+Use cases: https://tinocallarisa-web.github.io/org-chart/use-case.html
+Questions and ideas: https://github.com/tinocallarisa-web/org-chart/discussions
+More visuals: https://tcviz.com
+Support: support@tcviz.com
+
+Photos in the demo: Unsplash (unsplash.com).
+
+#PowerBI #OrgChart #DataVisualization
+
+(Cuando esté publicado, añadir arriba de LINKS: "Get it on AppSource: URL de la oferta".)

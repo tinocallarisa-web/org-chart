@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Org Chart by TCViz — Visual Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root {
+  --bg:#FAF9F5;  --bg2:#EDE9DE;  --bd:#F5F3ED;  --line:#DAD9D4;
+  --t1:#3D3929;  --t2:#535146;   --t3:#83827D;
+  --acc:#2B6CB0; --accd:#1F4E80; --acc2:#3E9C5B; --acc2l:#D9EFE0;
+}
+@media print {
+  @page { size: A4 landscape; margin: 0; }
+  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  #dl-bar, #fit-check { display: none; }
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#888;margin:0;padding:0;font-family:'Segoe UI',system-ui,sans-serif;}
+#infographic{background:var(--bg);color:var(--t1);width:1366px;height:768px;overflow:hidden;display:flex;flex-direction:column;padding:12px 32px 8px;}
+#fit-check{position:fixed;top:12px;right:12px;z-index:10000;background:#B00020;color:#fff;font:700 13px 'Segoe UI',sans-serif;padding:6px 12px;border-radius:6px;}
+
+.header{display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;margin-bottom:8px;}
+.header-title h1{font-size:28px;font-weight:700;color:var(--t1);line-height:1.05;}
+.header-title h1 span{color:var(--acc)}
+.header-title p{font-size:12px;color:var(--t3);margin-top:4px;line-height:1.4;}
+.header-title p strong{color:var(--acc)}
+
+.use-cases{background:var(--bd);border:1px solid var(--line);border-radius:10px;padding:6px 18px;display:flex;align-items:center;gap:14px;margin-bottom:8px;}
+.uc-label{writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:2px;white-space:nowrap;flex-shrink:0;}
+.uc-grid{display:flex;flex:1}
+.uc-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:2px 12px;border-right:1px solid var(--line);flex:1;}
+.uc-item:last-child{border-right:none}
+.uc-item i{font-size:16px;color:var(--acc)}
+.uc-item span{font-size:11px;color:var(--t2)}
+.uc-callout{flex-shrink:0;background:var(--acc);color:#fff;border-radius:10px;padding:5px 12px;max-width:230px;font-size:10.5px;line-height:1.35;}
+.uc-callout strong{color:#fff;display:block;margin-bottom:1px;font-size:11px}
+
+.main{display:grid;grid-template-columns:1fr 200px 1fr;gap:16px;margin-bottom:8px;}
+.col-left,.col-right{display:flex;flex-direction:column;gap:6px}
+
+.step{background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px 12px;}
+.step-accent{border:2px solid var(--acc);}
+.step-purple{border:2px solid var(--acc2);}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:var(--acc);color:#fff;font-size:9px;font-weight:700;margin-right:6px;vertical-align:middle;}
+.step h3{font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px;line-height:1.2}
+.step p{font-size:10.5px;color:var(--t2);line-height:1.35}
+.step p strong{color:var(--t1)}
+.step ul{list-style:none;margin-top:3px;display:flex;flex-direction:column;gap:1px}
+.step ul li{font-size:10.5px;color:var(--t2);display:flex;align-items:flex-start;gap:5px;line-height:1.3}
+.step ul li i{font-size:11px;flex-shrink:0;margin-top:1px}
+.step ul li i.ok{color:var(--acc)}
+.step ul li i.bad{color:var(--acc2)}
+.step-label{display:inline-block;vertical-align:middle;font-size:9.5px;font-weight:700;color:var(--acc);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+.step-label.purple{color:var(--acc2)}
+.formula{background:var(--bd);border:1px solid var(--line);border-radius:6px;padding:3px 8px;margin:4px 0 0;font-size:10.5px;color:var(--acc);text-align:center;font-weight:600;}
+
+.center{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.center-circle{width:112px;height:112px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--acc2));display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2px;color:#fff;}
+.center-circle .big{font-size:32px;font-weight:700;color:#fff;line-height:1}
+.center-circle .small{font-size:9px;color:#fff;text-transform:uppercase;letter-spacing:0.8px;line-height:1.3;max-width:90px}
+.stat-pill{background:var(--bd);border:1px solid var(--line);border-radius:6px;padding:3px 8px;width:100%;text-align:center;}
+.stat-pill .label{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px}
+.stat-pill .value{font-size:16px;font-weight:700;color:var(--acc);line-height:1.15}
+.stat-pill .value.purple{color:var(--acc2)}
+.stat-pill .desc{font-size:9px;color:var(--t3);margin-top:0}
+.connector-line{width:2px;height:4px;background:var(--line);margin:0 auto}
+
+.flow-section{margin-bottom:8px}
+.flow-title{font-size:9.5px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px}
+.flow{display:flex;align-items:center;gap:8px;background:var(--bd);border:1px solid var(--line);border-radius:10px;padding:6px 20px;}
+.flow-step{display:flex;flex-direction:column;align-items:center;gap:2px;flex:1}
+.flow-step i{font-size:15px;color:#fff;background:var(--acc);border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center}
+.flow-step span{font-size:10.5px;color:var(--t2);text-align:center;line-height:1.2}
+.flow-arrow{color:var(--t3);font-size:16px;flex-shrink:0}
+.flow-tagline{text-align:center;font-size:11px;color:var(--t3);margin-top:3px;font-style:italic}
+
+.bottom-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;flex:1;}
+.bottom-card{background:var(--bd);border:1px solid var(--line);border-radius:10px;padding:7px 14px;}
+.section-title{font-size:12px;font-weight:700;color:var(--acc);margin-bottom:3px;}
+.benefit{display:flex;align-items:flex-start;gap:7px;padding:2px 0;}
+.benefit i{font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px}
+.benefit-name{font-size:11px;font-weight:600;color:var(--t1)}
+.benefit-desc{font-size:10px;color:var(--t2);line-height:1.3}
+.tip{display:flex;align-items:flex-start;gap:6px;padding:1.5px 0;font-size:10.5px;color:var(--t2);line-height:1.3}
+.tip i{font-size:11px;color:var(--acc);flex-shrink:0;margin-top:2px}
+.tip-cta{margin-top:4px;background:var(--acc);border-radius:8px;padding:4px 10px;font-size:10px;color:#fff;line-height:1.3;}
+.tip-cta strong{display:block;color:#fff;font-size:10.5px}
+
+.footer{display:flex;align-items:center;justify-content:space-between;margin-top:6px;padding-top:5px;border-top:1px solid var(--line);}
+.footer-links{display:flex;gap:18px}
+.footer-links a{font-size:12px;color:var(--t3);text-decoration:none}
+.footer-links a:hover{color:var(--acc)}
+
+/* compactado para 1366x768 */
+#infographic{padding:10px 28px 6px;}
+.header{margin-bottom:6px;}
+.header > svg:last-child{width:133px;height:70px;}
+.uc-item{flex-direction:row;gap:5px;justify-content:center;}
+.step h3{display:inline;margin-left:6px;vertical-align:middle;}
+.step h3 + p, .step h3 + ul{margin-top:2px;}
+.col-left,.col-right{gap:5px}
+.main{margin-bottom:6px;}
+.flow-section{margin-bottom:6px}
+.flow{padding:4px 20px;}
+.flow-step{flex-direction:row;gap:6px;justify-content:center}
+.flow-step span{text-align:left}
+.flow-step i{width:22px;height:22px;font-size:13px;flex-shrink:0}
+.flow-tagline{margin-top:2px}
+.bottom-card{padding:5px 14px;}
+.benefit{padding:1px 0;}
+.tip{padding:1px 0;}
+.uc-callout{max-width:380px;}
+.use-cases{padding:4px 18px;}
+.bottom-grid{gap:12px;}
+.tip{font-size:10.2px;}
+.main{gap:12px;}
+.step ul{display:grid;grid-template-columns:1fr 1fr;column-gap:10px;row-gap:1px}
+.step ul li[style]{margin-top:0!important}
+.benefit-desc{font-size:10px;line-height:1.25}
+.step{padding:5px 12px;}
+.flow-title{margin-bottom:2px}
+.center{display:grid;grid-template-columns:1fr 1fr;gap:6px;align-content:center;justify-items:center}
+.center .center-circle{grid-column:1 / -1;width:100px;height:100px}
+.center .connector-line{display:none}
+.center-circle .big{font-size:28px}
+.stat-pill{padding:3px 4px}
+.stat-pill .label{font-size:8.5px;line-height:1.15}
+.stat-pill .desc{font-size:8.5px;line-height:1.15}
+.col-right .step:last-child ul{grid-template-columns:1fr}
+</style>
+</head>
+<body>
+
+<!-- DOWNLOAD BUTTON -->
+<div id="dl-bar" style="position:fixed;top:10px;left:10px;z-index:9999;">
+  <button id="dl-btn" onclick="downloadPNG()" style="background:#2B6CB0;color:#fff;border:none;border-radius:7px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.18);">
+    ⬇ Download PNG (1366×768)
+  </button>
+</div>
+<script>
+async function downloadPNG() {
+  const btn = document.getElementById('dl-btn');
+  const bar = document.getElementById('dl-bar');
+  btn.textContent = 'Generating…';
+  btn.disabled = true;
+  bar.style.display = 'none';
+  await new Promise(r => setTimeout(r, 300));
+  const el = document.getElementById('infographic');
+  const canvas = await html2canvas(el, {
+    width: 1366,
+    height: 768,
+    scale: 1,
+    useCORS: true,
+    allowTaint: true,
+    backgroundColor: '#FAF9F5',
+    x: 0, y: 0
+  });
+  bar.style.display = '';
+  btn.textContent = '⬇ Download PNG (1366×768)';
+  btn.disabled = false;
+  const link = document.createElement('a');
+  link.download = 'org-chart-infographic.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+</script>
+
+<div id="infographic">
+<!-- HEADER -->
+<div class="header">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 828 362" width="160" height="70" aria-label="TCViz">
+    <defs><linearGradient id="g" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#1F4E80"/><stop offset="0.55" stop-color="#2B6CB0"/><stop offset="1" stop-color="#3E9C5B"/>
+    </linearGradient></defs>
+    <g transform="translate(40,46)">
+      <rect x="22" y="20" width="150" height="150" rx="30" fill="none" stroke="url(#g)" stroke-width="11"/>
+      <g fill="url(#g)">
+        <rect x="42" y="110" width="20" height="58" rx="5"/><rect x="70" y="86" width="20" height="82" rx="5"/>
+        <rect x="98" y="62" width="20" height="106" rx="5"/><rect x="126" y="38" width="20" height="130" rx="5"/>
+      </g>
+    </g>
+    <text x="258" y="246" font-family="Poppins,sans-serif" font-weight="700" font-size="196" letter-spacing="-4">
+      <tspan fill="url(#g)">tc</tspan><tspan fill="#3D3929">viz</tspan>
+    </text>
+    <text x="264" y="306" font-family="Poppins,sans-serif" font-weight="500" font-size="31" letter-spacing="6.5" fill="#83827D">VISUALS TO POWER BI</text>
+  </svg>
+
+  <div class="header-title">
+    <h1>Org Chart <span>by TCViz</span></h1>
+    <p>Employee and manager IDs, photos and search for Power BI — every feature free, no licence, no limit on people.<br>From <strong>an HR table</strong> to <strong>who reports to whom</strong> in a few clicks.</p>
+  </div>
+  <svg width="190" height="100" viewBox="0 0 190 100" aria-hidden="true">
+    <g stroke="#B5B3AA" stroke-width="1.5" fill="none"><path d="M95 28 V40 H35 V52 M95 40 H155 V52 M95 40 V52 M35 74 V82 H20 V88 M35 82 H50 V88"/></g>
+    <rect x="70" y="8" width="50" height="20" rx="4" fill="#fff" stroke="#DAD9D4"/><rect x="70" y="8" width="50" height="4" rx="2" fill="#1F4E80"/>
+    <circle cx="80" cy="19" r="5" fill="#2B6CB0"/>
+    <rect x="12" y="52" width="46" height="20" rx="4" fill="#fff" stroke="#DAD9D4"/><rect x="12" y="52" width="46" height="4" rx="2" fill="#3E9C5B"/><circle cx="21" cy="63" r="5" fill="#3E9C5B"/>
+    <rect x="72" y="52" width="46" height="20" rx="4" fill="#fff" stroke="#DAD9D4"/><rect x="72" y="52" width="46" height="4" rx="2" fill="#D9A441"/><circle cx="81" cy="63" r="5" fill="#D9A441"/>
+    <rect x="132" y="52" width="46" height="20" rx="4" fill="#fff" stroke="#DAD9D4"/><rect x="132" y="52" width="46" height="4" rx="2" fill="#8E5FC4"/><circle cx="141" cy="63" r="5" fill="#8E5FC4"/>
+    <rect x="4" y="88" width="32" height="10" rx="3" fill="#E1F0E6"/><rect x="40" y="88" width="32" height="10" rx="3" fill="#E1F0E6"/>
+  </svg>
+</div>
+
+<!-- USE CASES -->
+<div class="use-cases">
+  <div class="uc-label">Use cases</div>
+  <div class="uc-grid">
+    <div class="uc-item"><i class="ti ti-sitemap" aria-hidden="true"></i><span>Company chart</span></div>
+    <div class="uc-item"><i class="ti ti-users-group" aria-hidden="true"></i><span>Span of control</span></div>
+    <div class="uc-item"><i class="ti ti-coin" aria-hidden="true"></i><span>Cost by team</span></div>
+    <div class="uc-item"><i class="ti ti-user-plus" aria-hidden="true"></i><span>Open positions</span></div>
+    <div class="uc-item"><i class="ti ti-arrows-split" aria-hidden="true"></i><span>Matrix teams</span></div>
+    <div class="uc-item"><i class="ti ti-building" aria-hidden="true"></i><span>Legal entities</span></div>
+    <div class="uc-item"><i class="ti ti-list-tree" aria-hidden="true"></i><span>Chart of accounts</span></div>
+    <div class="uc-item"><i class="ti ti-box" aria-hidden="true"></i><span>Product trees</span></div>
+  </div>
+  <div class="uc-callout">
+    <strong>Shift your mindset:</strong>
+    An org chart is not a poster. It is the fastest way to filter a report by a team.
+  </div>
+</div>
+
+<!-- MAIN 3-COL -->
+<div class="main">
+  <div class="col-left">
+    <div class="step step-accent">
+      <div class="step-num">1</div>
+      <div class="step-label">0–1 min</div>
+      <h3>Two fields draw it</h3>
+      <p>The person's ID in <strong>Employee ID</strong>, their manager's ID in <strong>Manager ID</strong>. Any depth.</p>
+      <ul>
+        <li><i class="ti ti-check ok"></i>Name, job title, department</li>
+        <li><i class="ti ti-check ok"></i>Photo as Base64, or initials</li>
+        <li><i class="ti ti-check ok"></i>A measure added up per team</li>
+        <li><i class="ti ti-check ok"></i>Empty name = vacancy</li>
+      </ul>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-label">1–3 min</div>
+      <h3>Large organisations stay readable</h3>
+      <p>Opens as many levels as fit with names readable; folded cards show <strong>+N</strong> reports.</p>
+      <div class="formula">one level ⌄ ⌃ &nbsp;|&nbsp; one branch &nbsp;|&nbsp; everything</div>
+      <ul>
+        <li><i class="ti ti-check ok"></i>Compact columns for wide teams</li>
+        <li><i class="ti ti-check ok"></i>Zoom, fit and minimap</li>
+      </ul>
+    </div>
+    <div class="step step-purple">
+      <div class="step-num" style="background:#3E9C5B">3</div>
+      <div class="step-label purple">3–5 min</div>
+      <h3>Go into one team</h3>
+      <p><strong>Show only this team</strong> on any manager, then the <strong style="color:#3E9C5B">breadcrumb</strong> to go back up.</p>
+      <div class="formula">Everyone › Giulia Rossi › Sara Gómez</div>
+    </div>
+  </div>
+
+  <div class="center">
+    <div class="center-circle">
+      <span class="big">Free</span>
+      <span class="small">every feature, no people limit</span>
+    </div>
+    <div class="connector-line"></div>
+    <div class="stat-pill">
+      <div class="label">Levels</div>
+      <div class="value">∞</div>
+      <div class="desc">from the Manager ID chain</div>
+    </div>
+    <div class="stat-pill">
+      <div class="label">Style templates</div>
+      <div class="value purple">5</div>
+      <div class="desc">+ 16 palettes</div>
+    </div>
+    <div class="stat-pill">
+      <div class="label">Color by</div>
+      <div class="value">4</div>
+      <div class="desc">dept · level · value · single</div>
+    </div>
+    <div class="stat-pill">
+      <div class="label">Format pane</div>
+      <div class="value">12</div>
+      <div class="desc">languages</div>
+    </div>
+  </div>
+
+  <div class="col-right">
+    <div class="step step-purple">
+      <div class="step-num" style="background:#3E9C5B">4</div>
+      <div class="step-label purple">5–8 min</div>
+      <h3>Find anyone</h3>
+      <p><strong>Search</strong> by name, title, department or ID: the branch opens and the card is marked.</p>
+      <ul>
+        <li><i class="ti ti-check ok"></i>Enter for the next match</li>
+        <li><i class="ti ti-check ok"></i>Keyboard through the tree</li>
+        <li><i class="ti ti-check ok"></i>Dotted-line managers</li>
+        <li><i class="ti ti-check ok"></i>Team size on each line</li>
+      </ul>
+    </div>
+    <div class="step step-accent">
+      <div class="step-num">5</div>
+      <div class="step-label">8–10 min</div>
+      <h3>Filter the report by a team</h3>
+      <p>Click a manager: every visual on the page shows <strong>their whole team</strong>. Click again to clear.</p>
+      <ul>
+        <li><i class="ti ti-check ok"></i>Or just the person</li>
+        <li><i class="ti ti-check ok"></i>Ctrl+click for more</li>
+        <li><i class="ti ti-check ok"></i>Bookmarks restore it</li>
+        <li><i class="ti ti-check ok"></i>fx on card colour</li>
+      </ul>
+    </div>
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-label">10–12 min</div>
+      <h3>Avoid common mistakes</h3>
+      <ul>
+        <li><i class="ti ti-x bad"></i>IDs as text in one column, numbers in the other</li>
+        <li><i class="ti ti-x bad"></i>Photos as web links</li>
+        <li><i class="ti ti-x bad"></i>Huge photos (over 32,766 characters)</li>
+        <li style="margin-top:3px"><i class="ti ti-check ok"></i>96×96 JPEG ≈ 5,000 characters</li>
+        <li><i class="ti ti-check ok"></i>Watch the warning icon: loops, repeats, missing managers</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- FLOW -->
+<div class="flow-section">
+  <div class="flow-title">Workflow with Org Chart</div>
+  <div class="flow">
+    <div class="flow-step"><i class="ti ti-database"></i><span>Employee<br>&amp; manager IDs</span></div>
+    <span class="flow-arrow">›</span>
+    <div class="flow-step"><i class="ti ti-id-badge-2"></i><span>Names, titles<br>&amp; photos</span></div>
+    <span class="flow-arrow">›</span>
+    <div class="flow-step"><i class="ti ti-palette"></i><span>Pick a<br>template</span></div>
+    <span class="flow-arrow">›</span>
+    <div class="flow-step"><i class="ti ti-search"></i><span>Find a<br>person</span></div>
+    <span class="flow-arrow">›</span>
+    <div class="flow-step"><i class="ti ti-focus-2"></i><span>Go into<br>a team</span></div>
+    <span class="flow-arrow">›</span>
+    <div class="flow-step"><i class="ti ti-pointer"></i><span>Click to<br>filter</span></div>
+    <span class="flow-arrow">›</span>
+    <div class="flow-step"><i class="ti ti-presentation"></i><span>Present<br>with impact</span></div>
+  </div>
+  <div class="flow-tagline">Who reports to whom, and how big each team is — in a second.</div>
+</div>
+
+<!-- BOTTOM -->
+<div class="bottom-grid">
+  <div class="bottom-card">
+    <div class="section-title">Key benefits</div>
+    <div class="benefit"><i class="ti ti-eye"></i><div><div class="benefit-name">Readable at any size</div><div class="benefit-desc">Opens what fits with names still readable, folds the rest with a count.</div></div></div>
+    <div class="benefit"><i class="ti ti-shield-check"></i><div><div class="benefit-name">Built for real HR data</div><div class="benefit-desc">Loops, repeated IDs and missing managers do not break it.</div></div></div>
+    <div class="benefit"><i class="ti ti-filter"></i><div><div class="benefit-name">A filter for the whole report</div><div class="benefit-desc">One click on a manager filters every visual by their team.</div></div></div>
+    <div class="benefit"><i class="ti ti-lock"></i><div><div class="benefit-name">Private by design</div><div class="benefit-desc">No network permission: names and photos never leave the report.</div></div></div>
+  </div>
+  <div class="bottom-card">
+    <div class="section-title">Key takeaways</div>
+    <div class="tip"><i class="ti ti-check"></i><span>Two IDs are enough — the levels come from the chain.</span></div>
+    <div class="tip"><i class="ti ti-check"></i><span>Same type and format for Employee ID and Manager ID.</span></div>
+    <div class="tip"><i class="ti ti-check"></i><span>Store photos small, as Base64, in the model.</span></div>
+    <div class="tip"><i class="ti ti-check"></i><span>Open branches are kept through filters and refreshes.</span></div>
+    <div class="tip"><i class="ti ti-check"></i><span>Not only people: any ID + parent ID table.</span></div>
+    <div class="tip-cta"><strong>One visual for every hierarchy.</strong>People, cost centres, entities or products — same two fields.</div>
+  </div>
+  <div class="bottom-card">
+    <div class="section-title">Format pane — quick reference</div>
+    <div class="tip"><i class="ti ti-palette"></i><span><strong style="color:#3D3929">Style template</strong> — Clean, Corporate, Colorful, Minimal, Compact</span></div>
+    <div class="tip"><i class="ti ti-id"></i><span><strong style="color:#3D3929">Cards</strong> — Size, photo, ring, title, team size, value, fx colour, selection</span></div>
+    <div class="tip"><i class="ti ti-layout-distribute-horizontal"></i><span><strong style="color:#3D3929">Layout</strong> — Orientation, compact, spacing, levels, groups, team click</span></div>
+    <div class="tip"><i class="ti ti-line"></i><span><strong style="color:#3D3929">Lines</strong> — Elbow, straight, curved; dotted-line managers; labels</span></div>
+    <div class="tip"><i class="ti ti-color-swatch"></i><span><strong style="color:#3D3929">Colors</strong> — Department, level, value; palette; tint strength</span></div>
+    <div class="tip"><i class="ti ti-tool"></i><span><strong style="color:#3D3929">Toolbar</strong> — Search, minimap, breadcrumb</span></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div style="display:flex;align-items:center;gap:10px">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 828 362" width="70" height="30" aria-label="TCViz">
+      <defs><linearGradient id="gf" x1="0" y1="1" x2="1" y2="0">
+        <stop offset="0" stop-color="#1F4E80"/><stop offset="0.55" stop-color="#2B6CB0"/><stop offset="1" stop-color="#3E9C5B"/>
+      </linearGradient></defs>
+      <g transform="translate(40,46)">
+        <rect x="22" y="20" width="150" height="150" rx="30" fill="none" stroke="url(#gf)" stroke-width="11"/>
+        <g fill="url(#gf)">
+          <rect x="42" y="110" width="20" height="58" rx="5"/><rect x="70" y="86" width="20" height="82" rx="5"/>
+          <rect x="98" y="62" width="20" height="106" rx="5"/><rect x="126" y="38" width="20" height="130" rx="5"/>
+        </g>
+      </g>
+      <text x="258" y="246" font-family="Poppins,sans-serif" font-weight="700" font-size="196" letter-spacing="-4">
+        <tspan fill="url(#gf)">tc</tspan><tspan fill="#3D3929">viz</tspan>
+      </text>
+      <text x="264" y="306" font-family="Poppins,sans-serif" font-weight="500" font-size="31" letter-spacing="6.5" fill="#83827D">VISUALS TO POWER BI</text>
+    </svg>
+    <span style="color:#83827D;font-size:11px">Org Chart by TCViz 1.0 · Power BI Custom Visual</span>
+  </div>
+  <div class="footer-links">
+    <a href="support.html">Support</a>
+    <a href="privacy.html">Privacy policy</a>
+    <a href="terms.html">Terms of use</a>
+    <a href="https://github.com/tinocallarisa-web/org-chart">GitHub</a>
+  </div>
+</div>
+
+</div><!-- /#infographic -->
+<div id="fit-check" hidden></div>
+<script>
+(function () {
+  function check() {
+    var el = document.getElementById('infographic');
+    var h = el.scrollHeight, b = document.getElementById('fit-check');
+    if (h > 768) { b.textContent = 'OVERFLOW: ' + (h - 768) + 'px'; b.hidden = false; document.title = 'OVERFLOW'; }
+    else { b.hidden = true; document.title = 'FIT'; }
+  }
+  window.addEventListener('load', function () {
+    var ready = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+    ready.then(function () { setTimeout(check, 100); });
+  });
+})();
+</script>
+</body>
+</html>
