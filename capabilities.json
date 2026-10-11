@@ -153,6 +153,14 @@
             ]
           }
         },
+        "photoRing": {
+          "displayName": "Photo ring",
+          "displayNameKey": "Prop_cards_photoRing",
+          "type": {
+            "bool": true
+          },
+          "description": "A ring in the department or level colour around the photo."
+        },
         "showTitle": {
           "displayName": "Show job title",
           "displayNameKey": "Prop_cards_showTitle",
@@ -510,6 +518,13 @@
             "bool": true
           },
           "description": "Fills each card with a light shade of its department colour."
+        },
+        "tintStrength": {
+          "displayName": "Tint strength %",
+          "displayNameKey": "Prop_colors_tintStrength",
+          "type": {
+            "numeric": true
+          }
         },
         "palette": {
           "displayName": "Palette",

@@ -25,7 +25,7 @@ const GUIDE = "https://tinocallarisa-web.github.io/org-chart/support.html";
 
 interface Settings {
     template: string;
-    width: number; height: number; showPhoto: boolean; photoShape: string; showTitle: boolean; showDepartment: boolean;
+    width: number; height: number; showPhoto: boolean; photoShape: string; photoRing: boolean; tintStrength: number; showTitle: boolean; showDepartment: boolean;
     count: string; showValue: boolean; fontFamily: string; nameSize: number; nameColor: string; textColor: string;
     fill: string; borderColor: string; borderWidth: number; radius: number; accent: string; shadow: boolean;
     orientation: string; compact: boolean; gapSibling: number; gapLevel: number; autoDepth: boolean; initialDepth: number; clusters: boolean; selectTeam: boolean;
@@ -38,7 +38,7 @@ interface Settings {
 
 const DEFAULTS: Settings = {
     template: "clean",
-    width: 200, height: 64, showPhoto: true, photoShape: "circle", showTitle: true, showDepartment: false,
+    width: 200, height: 64, showPhoto: true, photoShape: "circle", photoRing: true, tintStrength: 22, showTitle: true, showDepartment: false,
     count: "direct", showValue: true, fontFamily: "'Segoe UI', wf_segoe-ui_normal, helvetica, arial, sans-serif", nameSize: 12,
     nameColor: "#3D3929", textColor: "#83827D",
     fill: "#FFFFFF", borderColor: "#DAD9D4", borderWidth: 1, radius: 8, accent: "top", shadow: false,
@@ -54,7 +54,7 @@ const TEMPLATES: Record<string, Partial<Settings>> = {
     none: {},
     clean: {},
     corporate: { accent: "left", radius: 3, shadow: true, borderWidth: 0, photoShape: "square", fontFamily: "'Segoe UI Semibold', 'Segoe UI', sans-serif", linkShape: "elbow" },
-    colorful: { tint: true, accent: "none", borderWidth: 0, radius: 12, palette: "vivid", linkByDept: true },
+    colorful: { tint: true, tintStrength: 30, accent: "none", borderWidth: 0, radius: 12, palette: "vivid", linkByDept: true },
     minimal: { fill: "", borderWidth: 0, accent: "none", linkShape: "curved", showValue: false, count: "none" },
     compact: { width: 160, height: 40, showPhoto: false, showTitle: false, nameSize: 11, gapLevel: 28, gapSibling: 10, radius: 4 },
 };
@@ -75,7 +75,7 @@ function readSettings(objects: Objects): Settings {
     return {
         template: tplName,
         width: pick("cards", "width", "width"), height: pick("cards", "height", "height"), showPhoto: pick("cards", "showPhoto", "showPhoto"),
-        photoShape: pick("cards", "photoShape", "photoShape"), showTitle: pick("cards", "showTitle", "showTitle"),
+        photoShape: pick("cards", "photoShape", "photoShape"), photoRing: pick("cards", "photoRing", "photoRing"), tintStrength: pick("colors", "tintStrength", "tintStrength"), showTitle: pick("cards", "showTitle", "showTitle"),
         showDepartment: pick("cards", "showDepartment", "showDepartment"), count: pick("cards", "count", "count"), showValue: pick("cards", "showValue", "showValue"),
         fontFamily: pick("cards", "fontFamily", "fontFamily"), nameSize: pick("cards", "nameSize", "nameSize"),
         nameColor: pick("cards", "nameColor", "nameColor"), textColor: pick("cards", "textColor", "textColor"),
@@ -516,7 +516,7 @@ export class Visual implements IVisual {
                 return ramp([s.lowColor, s.highColor], hi > lo ? (v - lo) / (hi - lo) : 1);
             }
         }
-        if (this.groupMode && s.tint && (p.dept || s.colorMode === "level")) return mix(this.deptColor(p), "#FFFFFF", 0.82);
+        if (this.groupMode && s.tint && (p.dept || s.colorMode === "level")) return mix(this.deptColor(p), "#FFFFFF", 1 - clamp(s.tintStrength, 0, 100) / 100);
         return s.fill || "transparent";
     }
 
@@ -732,6 +732,14 @@ export class Visual implements IVisual {
                 const im = this.el("image", { x: px, y: py, width: sz, height: sz, preserveAspectRatio: "xMidYMid slice", "clip-path": `url(#tcoc-clip-${s.photoShape === "square" ? "square" : s.photoShape === "rounded" ? "rounded" : "circle"})` });
                 im.setAttribute("href", p.photo);
                 g.appendChild(im);
+                // Aro con el color del grupo: la paleta se ve también en las tarjetas con foto.
+                if (s.photoRing && !hc && this.groupMode && (p.dept || s.colorMode === "level")) {
+                    const ring = s.photoShape === "circle"
+                        ? this.el("circle", { cx: px + sz / 2, cy: py + sz / 2, r: sz / 2 + 1.5 })
+                        : this.el("rect", { x: px - 1.5, y: py - 1.5, width: sz + 3, height: sz + 3, rx: s.photoShape === "rounded" ? sz * 0.22 + 1.5 : 1 });
+                    ring.setAttribute("fill", "none"); ring.setAttribute("stroke", dept); ring.setAttribute("stroke-width", "2.5");
+                    g.appendChild(ring);
+                }
             } else {
                 const shapeEl = s.photoShape === "circle"
                     ? this.el("circle", { cx: px + sz / 2, cy: py + sz / 2, r: sz / 2 })
@@ -1360,6 +1368,7 @@ export class Visual implements IVisual {
                     num("cards", "width", "Card width", s.width), num("cards", "height", "Card height", s.height),
                     tog("cards", "showPhoto", "Show photo", s.showPhoto),
                     dd("cards", "photoShape", "Photo shape", s.photoShape, [["circle", "Enum_ph_circle", "Circle"], ["rounded", "Enum_ph_rounded", "Rounded"], ["square", "Enum_ph_square", "Square"]]),
+                    tog("cards", "photoRing", "Photo ring", s.photoRing),
                     tog("cards", "showTitle", "Show job title", s.showTitle), tog("cards", "showDepartment", "Show department", s.showDepartment),
                     dd("cards", "count", "Team size", s.count, [["none", "Enum_cnt_none", "None"], ["direct", "Enum_cnt_direct", "Direct reports"], ["total", "Enum_cnt_total", "Whole team"], ["both", "Enum_cnt_both", "Direct / whole team"]]),
                     tog("cards", "showValue", "Show value", s.showValue),
@@ -1388,7 +1397,7 @@ export class Visual implements IVisual {
                 ]),
                 card("colors", "Colors", [
                     dd("colors", "mode", "Color by", s.colorMode, [["department", "Enum_col_department", "Department"], ["level", "Enum_col_level", "Level"], ["value", "Enum_col_value", "Color value"], ["single", "Enum_col_single", "Single color"]]),
-                    tog("colors", "tint", "Tint cards", s.tint),
+                    tog("colors", "tint", "Tint cards", s.tint), num("colors", "tintStrength", "Tint strength %", s.tintStrength),
                     dd("colors", "palette", "Palette", s.palette, PALETTES.filter(pp => pp.type === "cat").map(pp => [pp.id, "Enum_pal_" + pp.id, pp.name + (pp.cb ? " (cb)" : "")] as [string, string, string])),
                     col("colors", "lowColor", "Low color", s.lowColor), col("colors", "highColor", "High color", s.highColor),
                     col("colors", "background", "Background", s.background),
