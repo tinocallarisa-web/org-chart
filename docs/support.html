@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Org Chart by TCViz – Support</title>
+<style>
+  :root {
+    --bg: #FAF9F5; --bg2: #EDE9DE; --bd: #F5F3ED; --line: #DAD9D4;
+    --t1: #3D3929; --t2: #535146; --t3: #83827D;
+    --acc: #2B6CB0; --accd: #1F4E80; --acc2: #3E9C5B;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--t1); line-height: 1.65; }
+
+  /* ── Header ── */
+  header { background: var(--t1); color: #fff; padding: 28px 48px; display: flex; align-items: center; gap: 20px; }
+  header svg { flex-shrink: 0; }
+  header .title { font-size: 22px; font-weight: 700; }
+  header .sub   { font-size: 13px; color: #b5b3aa; margin-top: 2px; }
+
+  /* ── Nav ── */
+  nav { background: var(--bg2); border-bottom: 1px solid var(--line); padding: 0 48px; display: flex; gap: 0; overflow-x: auto; }
+  nav a { display: block; padding: 14px 14px; white-space: nowrap; font-size: 13px; font-weight: 600; color: var(--t2);
+          text-decoration: none; border-bottom: 3px solid transparent; transition: color .2s, border-color .2s; }
+  nav a:hover, nav a.active { color: var(--acc); border-bottom-color: var(--acc); }
+
+  /* ── Layout ── */
+  .wrap { max-width: 900px; margin: 0 auto; padding: 48px 24px 80px; }
+  h1 { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+  h2 { font-size: 17px; font-weight: 700; color: var(--t1); margin: 40px 0 12px; padding-bottom: 8px;
+       border-bottom: 2px solid var(--acc); display: inline-block; }
+  h3 { font-size: 14px; font-weight: 700; color: var(--t1); margin: 18px 0 6px; }
+  p  { font-size: 14px; color: var(--t2); margin-bottom: 10px; }
+  ul { font-size: 14px; color: var(--t2); padding-left: 20px; margin-bottom: 10px; }
+  li { margin-bottom: 5px; }
+  code { font-family: monospace; background: var(--bg2); padding: 1px 6px; border-radius: 4px;
+         font-size: 12px; color: var(--acc); }
+
+  /* ── Cards ── */
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 24px 28px; margin-bottom: 16px; }
+
+  /* ── Badges ── */
+  .badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px;
+           text-transform: uppercase; letter-spacing: .5px; vertical-align: middle; margin-left: 6px; }
+  .badge-pro  { background: var(--acc2); color: #fff; }
+  .badge-free { background: var(--acc);  color: #fff; }
+
+  /* ── Field wells table ── */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 16px; }
+  th { background: var(--bg2); color: var(--t1); font-weight: 700; padding: 10px 14px; text-align: left;
+       border-bottom: 2px solid var(--line); }
+  td { padding: 9px 14px; border-bottom: 1px solid var(--bd); color: var(--t2); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+
+  /* ── FAQ ── */
+  details { border: 1px solid var(--line); border-radius: 8px; margin-bottom: 10px; background: #fff; }
+  summary { padding: 14px 18px; font-size: 14px; font-weight: 600; cursor: pointer; list-style: none;
+            display: flex; align-items: center; justify-content: space-between; color: var(--t1); }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: '+'; font-size: 18px; font-weight: 300; color: var(--acc); transition: transform .2s; }
+  details[open] summary::after { content: '−'; }
+  details[open] summary { border-bottom: 1px solid var(--line); }
+  .faq-body { padding: 14px 18px; font-size: 14px; color: var(--t2); }
+  .faq-body p { margin-bottom: 6px; }
+  .faq-body ul { margin-top: 6px; }
+
+  /* ── Contact box ── */
+  .contact-box { background: var(--acc); color: #fff; border-radius: 10px; padding: 24px 28px;
+                  display: flex; align-items: center; gap: 20px; }
+  .contact-box .icon { font-size: 36px; flex-shrink: 0; }
+  .contact-box h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; color: #fff; }
+  .contact-box p  { font-size: 13px; color: rgba(255,255,255,.85); margin: 0; }
+  .contact-box a  { color: #fff; font-weight: 700; text-decoration: underline; }
+
+  /* ── Video embed ── */
+  .video-wrap { position: relative; padding-bottom: 56.25%; height: 0; border-radius: 10px; overflow: hidden;
+                border: 1px solid var(--line); margin-bottom: 20px; }
+  .video-wrap iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
+  /* ── CTA strip ── */
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; margin: 16px 0; }
+  .btn { display: inline-block; padding: 10px 22px; border-radius: 6px; font-size: 13px; font-weight: 700;
+          text-decoration: none; transition: background .2s; }
+  .btn-primary { background: var(--acc); color: #fff; }
+  .btn-primary:hover { background: var(--accd); }
+  .btn-outline { background: transparent; color: var(--acc); border: 2px solid var(--acc); }
+  .btn-outline:hover { background: var(--acc); color: #fff; }
+
+  /* ── Search ── */
+  .searchbar { background: var(--bg2); border-bottom: 1px solid var(--line); padding: 14px 48px 16px; }
+  .searchbox { position: relative; max-width: 900px; margin: 0 auto; display: flex; align-items: center;
+               gap: 10px; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 0 12px; }
+  .searchbox:focus-within { border-color: var(--acc); box-shadow: 0 0 0 3px rgba(43,108,176,.16); }
+  .searchbox svg { color: var(--t3); flex-shrink: 0; }
+  .searchbox input { flex: 1; border: none; outline: none; background: transparent; font: inherit;
+                     font-size: 14px; color: var(--t1); padding: 11px 0; }
+  .searchbox input::placeholder { color: var(--t3); }
+  .searchbox button { border: none; background: transparent; color: var(--t3); font-size: 20px;
+                      line-height: 1; cursor: pointer; padding: 0 2px; }
+  .searchbox button:hover { color: var(--acc); }
+  .search-status { max-width: 900px; margin: 8px auto 0; font-size: 12px; color: var(--t3); min-height: 16px; }
+  mark { background: #FCE8A8; color: var(--t1); border-radius: 2px; padding: 0 2px; }
+  .is-hidden { display: none !important; }
+
+  /* ── Version pill ── */
+  .verpill { display: block; width: fit-content; font-size: 11px; font-weight: 700; letter-spacing: .4px;
+             background: var(--bg2); color: var(--t2); border: 1px solid var(--line);
+             padding: 3px 10px; border-radius: 20px; margin-bottom: 14px; }
+  .verpill a { color: var(--acc); text-decoration: none; }
+  .lead { font-size: 14px; line-height: 1.6; color: var(--t2); margin: 0 0 22px; }
+  .lead a { color: var(--acc); }
+
+  /* ── Footer ── */
+  footer { background: var(--t1); color: var(--t3); text-align: center; padding: 24px 48px; font-size: 12px; }
+  footer a { color: #b5b3aa; text-decoration: none; margin: 0 8px; }
+  footer a:hover { color: #fff; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 828 362" width="90" height="40">
+    <defs><linearGradient id="g" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#1F4E80"/>
+      <stop offset=".55" stop-color="#2B6CB0"/>
+      <stop offset="1" stop-color="#3E9C5B"/>
+    </linearGradient></defs>
+    <g transform="translate(40,46)">
+      <rect x="22" y="20" width="150" height="150" rx="30" fill="none" stroke="url(#g)" stroke-width="11"/>
+      <g fill="url(#g)">
+        <rect x="42" y="110" width="20" height="58" rx="5"/>
+        <rect x="70" y="86" width="20" height="82" rx="5"/>
+        <rect x="98" y="62" width="20" height="106" rx="5"/>
+        <rect x="126" y="38" width="20" height="130" rx="5"/>
+      </g>
+    </g>
+    <text x="258" y="246" font-family="Poppins,sans-serif" font-weight="700" font-size="196" letter-spacing="-4">
+      <tspan fill="url(#g)">tc</tspan><tspan fill="#fff">viz</tspan>
+    </text>
+    <text x="264" y="306" font-family="Poppins,sans-serif" font-weight="500" font-size="31" letter-spacing="6.5" fill="#83827D">VISUALS TO POWER BI</text>
+  </svg>
+  <div>
+    <div class="title">Org Chart by TCViz</div>
+    <div class="sub">Support &amp; Documentation</div>
+  </div>
+</header>
+
+<!-- Nav -->
+<nav>
+  <a href="#quickstart" class="active">Quick Start</a>
+  <a href="#fields">Field Wells</a>
+  <a href="#format">Format Pane</a>
+  <a href="#navigate">Navigating</a>
+  <a href="#interaction">Selection</a>
+  <a href="#accessibility">Accessibility</a>
+  <a href="#performance">Performance</a>
+  <a href="#quality">Real data</a>
+  <a href="#troubleshooting">Troubleshooting</a>
+  <a href="#faq">FAQ</a>
+  <a href="use-case.html">Use cases</a>
+  <a href="changelog.html">Changelog</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<!-- Search -->
+<div class="searchbar">
+  <div class="searchbox">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="docsearch" type="search" placeholder="Search the documentation — try &quot;photo&quot;, &quot;vacancy&quot;, &quot;bookmark&quot;…"
+           autocomplete="off" aria-label="Search the documentation">
+    <button id="searchclear" type="button" aria-label="Clear search" hidden>&times;</button>
+  </div>
+  <div id="searchstatus" class="search-status" role="status" aria-live="polite"></div>
+</div>
+
+<div class="wrap">
+
+  <div class="verpill">Visual v1.0.0.0 &nbsp;·&nbsp; docs updated 11 Oct 2026 &nbsp;·&nbsp; <a href="changelog.html">what's new</a></div>
+
+  <p class="lead"><strong>Free — every feature, no licence, no watermark.</strong> Supported Power BI features:
+  cross-filtering by a person or <strong>their whole team</strong>, Ctrl+click multi-select, highlighting ·
+  <strong>bookmarks</strong> · standard and <strong>report page tooltips</strong> · context menu ·
+  <strong>conditional formatting (fx)</strong> on card colour · <strong>format on the canvas</strong> (on-object) ·
+  keyboard navigation through the tree with ARIA labels · high contrast · <strong>number formats from the model</strong> ·
+  <strong>12 panel languages</strong> · data streaming past 30,000 rows in the Power BI service. Org chart:
+  employee and manager IDs, photos, vacancies, <strong>dotted-line managers</strong>, collapse and expand,
+  <strong>breadcrumb navigation</strong>, search, zoom, minimap, compact layout, department groups, 5 style templates.</p>
+
+  <!-- Quick Start -->
+  <h2 id="quickstart">Quick Start</h2>
+  <div class="card">
+    <h3>1. Add the visual to your report</h3>
+    <p>In Power BI Desktop, go to the Visualizations pane → click the three dots → <strong>Get more visuals</strong> → search for <em>Org Chart by TCViz</em>.</p>
+    <h3>2. Two fields draw the chart</h3>
+    <p>Drag the person's ID to <strong>Employee ID</strong> and their manager's ID to <strong>Manager ID</strong>. The person with an empty Manager ID is the top of the chart. That is all the visual needs: it works out the levels itself, however deep the organisation is.</p>
+    <h3>3. Make the cards useful</h3>
+    <p>Add <strong>Name</strong>, <strong>Job title</strong>, <strong>Department</strong> and <strong>Photo</strong>. Put a measure in <strong>Value</strong> (cost, FTE, sales…) to show it on each card and add it up for each manager's team.</p>
+    <h3>4. Pick a look</h3>
+    <p>Format → <strong>Style template</strong>: Clean, Corporate, Colorful, Minimal or Compact. Anything you set by hand wins over the template.</p>
+  </div>
+
+  <!-- Field wells -->
+  <h2 id="fields">Field Wells</h2>
+  <table>
+    <tr><th>Well</th><th>Accepts</th><th>What it does</th></tr>
+    <tr><td><strong>Employee ID</strong></td><td>1 column</td><td>A unique ID for each person or position. Required.</td></tr>
+    <tr><td><strong>Manager ID</strong></td><td>1 column</td><td>The Employee ID of each person's manager. Empty, or the person's own ID, means the top of the chart. Required.</td></tr>
+    <tr><td><strong>Dotted-line manager ID</strong></td><td>1 column</td><td>Optional second manager (matrix or project reporting). Drawn as a dashed curved line and shown in the tooltip.</td></tr>
+    <tr><td><strong>Name</strong></td><td>1 column</td><td>Main text of the card. A row with an empty name is shown as a <strong>vacancy</strong>, with a dashed border.</td></tr>
+    <tr><td><strong>Job title</strong></td><td>1 column</td><td>Second line of the card.</td></tr>
+    <tr><td><strong>Department</strong></td><td>1 column</td><td>Colours the cards and can group teams in boxes.</td></tr>
+    <tr><td><strong>Photo</strong></td><td>1 column</td><td>A Base64 image stored in your model (<code>data:image/jpeg;base64,…</code>; PNG, JPEG, GIF, SVG or WebP). Without a photo, the card shows the person's initials. Web links are not loaded, on purpose — see <a href="privacy.html">Privacy</a>.</td></tr>
+    <tr><td><strong>Value</strong></td><td>1 measure</td><td>Shown on each card and added up for each manager's whole team (tooltip and line labels).</td></tr>
+    <tr><td><strong>Color value</strong></td><td>1 measure</td><td>Colours the cards on a gradient when Colors → Color by is <em>Color value</em>.</td></tr>
+    <tr><td><strong>Tooltips</strong></td><td>measures</td><td>Extra values in the tooltip.</td></tr>
+  </table>
+  <p>Limits: Power BI sends up to <strong>30,000 rows</strong> per block. In the Power BI service the visual asks for the next blocks automatically; Power BI Desktop only sends the first block to custom visuals, and the warning icon in the visual header says so.</p>
+
+  <!-- Navigating -->
+  <h2 id="navigate">Navigating a large organisation</h2>
+  <div class="card">
+    <ul>
+      <li><strong>Open levels to fit</strong> (on by default): the chart opens as many levels as fit with names still readable on screen, and folds the rest. Each folded card shows <code>+N</code>, the number of direct reports under it.</li>
+      <li><strong>Collapse and expand</strong> any branch with the button under the card, or double-click the card. The toolbar has <em>Expand all</em> and <em>Collapse all</em>.</li>
+      <li><strong>Show only this team</strong>: the button in the corner of a manager's card shows just their branch, with the path above — <em>Everyone › CEO › CFO</em> — to go back up one click at a time (breadcrumb).</li>
+      <li><strong>Search</strong> by name, job title, department or ID: the chart opens the branch, centres the person and marks the card. Press Enter for the next match.</li>
+      <li><strong>Zoom</strong> with the toolbar or Ctrl + mouse wheel, <strong>pan</strong> by dragging the background or with the mouse wheel, <strong>Fit</strong> to see everything, and the <strong>minimap</strong> in the corner to jump anywhere.</li>
+      <li>The branches you open and the team you focus on are <strong>remembered</strong> when filters change and when the data refreshes.</li>
+    </ul>
+  </div>
+
+  <!-- Format pane -->
+  <h2 id="format">Format Pane</h2>
+  <div class="card">
+    <h3>Style template</h3>
+    <p><strong>None</strong>, <strong>Clean</strong> (default), <strong>Corporate</strong> (left band, square photos, shadow), <strong>Colorful</strong> (cards tinted by department), <strong>Minimal</strong> (no borders, curved lines) and <strong>Compact</strong> (small cards without photos). A template only fills in what you have not changed yourself.</p>
+  </div>
+  <div class="card">
+    <h3>Cards</h3>
+    <table>
+      <tr><th>Setting</th><th>Default</th><th>Notes</th></tr>
+      <tr><td>Card width / height</td><td>200 / 64</td><td>80–600 and 28–300 pixels.</td></tr>
+      <tr><td>Show photo · Photo shape</td><td>On · Circle</td><td>Circle, Rounded or Square.</td></tr>
+      <tr><td>Show job title · Show department</td><td>On · Off</td><td></td></tr>
+      <tr><td>Team size</td><td>Direct reports</td><td>None, Direct reports, Whole team, or both.</td></tr>
+      <tr><td>Show value</td><td>On</td><td>The Value measure, formatted as in your model.</td></tr>
+      <tr><td>Font · Name size · Name color · Text color</td><td>Segoe UI · 12</td><td></td></tr>
+      <tr><td>Card color</td><td>White</td><td>Supports <strong>fx</strong> conditional formatting: rules, gradient or a field value give each card its own colour.</td></tr>
+      <tr><td>Border color · width · Corner radius · Shadow</td><td>grey · 1 · 8 · Off</td><td></td></tr>
+      <tr><td>Department band</td><td>Top</td><td>A band in the department (or level) colour: Top, Left or None.</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h3>Layout</h3>
+    <table>
+      <tr><th>Setting</th><th>Default</th><th>Notes</th></tr>
+      <tr><td>Orientation</td><td>Top to bottom</td><td>Or Left to right.</td></tr>
+      <tr><td>Compact</td><td>On</td><td>People without reports are listed in a column under their manager, so a wide team fits on screen. Top to bottom only.</td></tr>
+      <tr><td>Space between cards · between levels</td><td>16 · 40</td><td></td></tr>
+      <tr><td>Open levels to fit</td><td>On</td><td>Off: <em>Levels open at start</em> decides (0 opens every level).</td></tr>
+      <tr><td>Group departments</td><td>Off</td><td>Draws a box, in the department colour, around each department's team.</td></tr>
+      <tr><td>Click selects the whole team</td><td>On</td><td>Clicking a manager filters the page by everyone under them. Off: just that person.</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h3>Lines</h3>
+    <p><strong>Shape</strong>: Elbow, Straight or Curved · <strong>Color</strong>, <strong>Width</strong>, <strong>Dashed</strong> · <strong>Department color</strong> (each line takes the colour of the team below) · <strong>Show dotted-line managers</strong> · <strong>Label</strong> on each line: the size of the team below or its total value.</p>
+  </div>
+  <div class="card">
+    <h3>Colors</h3>
+    <table>
+      <tr><th>Color by</th><th>What you get</th></tr>
+      <tr><td>Department</td><td>Each department its own colour (band, initials, lines, groups).</td></tr>
+      <tr><td>Level</td><td>Each level of the organisation its own colour — useful without a Department field.</td></tr>
+      <tr><td>Color value</td><td>Cards on a gradient from Low color to High color by the Color value measure (or Value).</td></tr>
+      <tr><td>Single color</td><td>Card color for every card.</td></tr>
+    </table>
+    <p><strong>Tint cards</strong> fills each card with a light shade of its department or level colour. 16 palettes, 4 of them colour-blind safe. Background: optional; empty keeps the visual transparent.</p>
+  </div>
+  <div class="card">
+    <h3>Toolbar</h3>
+    <p>Show or hide the toolbar, search, minimap and breadcrumb. On small tiles the toolbar and search hide themselves.</p>
+  </div>
+  <div class="card">
+    <h3>Format on the canvas</h3>
+    <p>In format mode, click a card's text to change font, size and colour, the card itself for fill and border, or a line for its colour and shape — without opening the Format pane.</p>
+  </div>
+
+  <!-- Interaction -->
+  <h2 id="interaction">Selection &amp; filtering</h2>
+  <div class="card">
+    <ul>
+      <li><strong>Click</strong> a card to filter the page by that person — or, for a manager, by their whole team. <strong>Click again</strong> to clear, <strong>Ctrl+click</strong> to add more, click the background to clear.</li>
+      <li>Selections in other visuals <strong>highlight</strong> the cards they touch (with a Value measure) and dim the rest.</li>
+      <li><strong>Bookmarks</strong> restore the selection: the chart opens the branches of the selected people and centres them.</li>
+      <li>Right-click a card for the Power BI context menu (Drill through, Include, Exclude…).</li>
+    </ul>
+  </div>
+
+  <!-- Accessibility -->
+  <h2 id="accessibility">Accessibility</h2>
+  <div class="card">
+    <ul>
+      <li><strong>Keyboard:</strong> Tab into the chart, then move through the tree — top to bottom: <code>↑</code> manager, <code>↓</code> first report (opens the branch if needed), <code>←</code> <code>→</code> colleagues; left to right the arrows turn with the chart. <code>Home</code> goes to the top, <code>Enter</code> or <code>Space</code> selects (<code>Ctrl</code> to add), <code>+</code>/<code>-</code> expand and collapse, <code>F</code> shows only that team, <code>Esc</code> clears, <code>Shift+F10</code> opens the context menu.</li>
+      <li><strong>Screen readers:</strong> the chart is a tree; each card is announced with name, job title, department, number of direct reports, level and whether it is expanded.</li>
+      <li><strong>High contrast:</strong> with a Windows high-contrast theme, cards, lines and text use the system colours.</li>
+      <li>4 colour-blind safe palettes (Okabe-Ito and Paul Tol).</li>
+    </ul>
+  </div>
+
+  <!-- Data quality -->
+  <h2 id="quality">Real data: what the chart does with it</h2>
+  <div class="card">
+    <ul>
+      <li><strong>Several people without a manager</strong>: several charts side by side.</li>
+      <li><strong>A Manager ID that is not an employee</strong>: that person's team is shown at the top, and the warning icon lists the missing IDs.</li>
+      <li><strong>A reporting loop</strong> (A reports to B, B reports to A): the loop is broken, one of them becomes a top, and the warning icon says where.</li>
+      <li><strong>A repeated Employee ID</strong>: the first row is used, and the warning icon lists it.</li>
+      <li><strong>Someone who is their own manager</strong>: treated as a top.</li>
+    </ul>
+  </div>
+
+  <!-- Troubleshooting -->
+  <h2 id="troubleshooting">Troubleshooting</h2>
+  <table>
+    <tr><th>What you see</th><th>Why</th><th>What to do</th></tr>
+    <tr><td>The start page with three steps</td><td>Employee ID or Manager ID is empty.</td><td>Both fields are required.</td></tr>
+    <tr><td>Everyone at the top, side by side</td><td>Manager ID values do not match Employee ID values (text against numbers, leading zeros, spaces).</td><td>Use the same column type and format for both IDs. The warning icon lists the IDs it could not find.</td></tr>
+    <tr><td>Photos do not appear</td><td>The Photo value is a web link, is longer than Power BI's 32,766-character limit for a text value, or does not start with <code>data:image/</code>.</td><td>Store small images as Base64 (a 96×96 JPEG is about 5,000 characters).</td></tr>
+    <tr><td>Only two levels are open</td><td><em>Open levels to fit</em> keeps names readable.</td><td>Expand branches by hand, zoom in, or turn it off and set <em>Levels open at start</em>.</td></tr>
+    <tr><td>A warning icon about rows in Desktop</td><td>Power BI Desktop sends custom visuals only the first 30,000 rows.</td><td>Publish to the Power BI service.</td></tr>
+    <tr><td>fx on Card color does nothing</td><td>Color by is Color value, which takes the colour from the measure.</td><td>Set Color by to Department, Level or Single color.</td></tr>
+  </table>
+
+  <!-- FAQ -->
+  <h2 id="faq">FAQ</h2>
+  <details><summary>Is it really free?</summary><div class="faq-body"><p>Yes. Every feature on this page is included, with no licence, no limit on the number of people, no trial and no watermark.</p></div></details>
+  <details><summary>Is it only for people?</summary><div class="faq-body"><p>No. Any parent–child table works: a chart of accounts, cost centres, legal entities, a product tree. Put the item's ID in Employee ID and its parent's ID in Manager ID.</p></div></details>
+  <details><summary>How deep can the organisation be?</summary><div class="faq-body"><p>There is no level limit: the levels come from the Manager ID chain, not from separate columns.</p></div></details>
+  <details><summary>How do I show a vacancy?</summary><div class="faq-body"><p>Add a row for the position with an Employee ID, a Manager ID and an empty Name. It is drawn as <em>Vacant</em> with a dashed border.</p></div></details>
+  <details><summary>Someone reports to two managers. Can I show both?</summary><div class="faq-body"><p>Yes: the main manager in Manager ID and the second one in <strong>Dotted-line manager ID</strong>. The second link is drawn as a dashed curved line, and the tooltip names it.</p></div></details>
+  <details><summary>How do I get photos into the model?</summary><div class="faq-body"><p>As Base64 text: a column whose values start with <code>data:image/jpeg;base64,</code>. Keep them small — Power BI cuts text values longer than 32,766 characters; a 96×96 JPEG is about 5,000. Set the column's data category to <em>Image URL</em> if you also want to see the photos in a table.</p></div></details>
+  <details><summary>Why are web links to photos not loaded?</summary><div class="faq-body"><p>The visual has no network permission, so it cannot load anything from outside your report — and cannot send anything either. See <a href="privacy.html">Privacy</a>.</p></div></details>
+  <details><summary>What do bookmarks remember?</summary><div class="faq-body"><p>Power BI bookmarks keep a custom visual's <strong>selection</strong>: applying one selects the same people again, opens their branches and centres them. The branches you open by hand and the team you focus on are kept while you work — through filters and refreshes — but a bookmark does not store them; that is how bookmarks work for all custom visuals.</p></div></details>
+  <details><summary>Clicking a manager filters everyone under them. Can it filter just the manager?</summary><div class="faq-body"><p>Turn off Layout → <strong>Click selects the whole team</strong>.</p></div></details>
+  <details><summary>Can I drill down?</summary><div class="faq-body"><p>The org chart is already the hierarchy: open a branch, or use <strong>Show only this team</strong> to go into it, and the breadcrumb to come back up. Power BI's drill buttons apply to hierarchies of columns, which an employee–manager table does not have.</p></div></details>
+  <details><summary>Which languages is the Format pane in?</summary><div class="faq-body"><p>English, Spanish, French, German, Italian, Portuguese (Brazil and Portugal), Dutch, Polish, Japanese, Simplified Chinese and Korean. It follows the language of Power BI.</p></div></details>
+  <details><summary>Does my data leave Power BI?</summary><div class="faq-body"><p>No. The visual has no network permission: it cannot send or load anything. See <a href="privacy.html">Privacy</a>.</p></div></details>
+
+  <!-- Contact -->
+  <h2 id="contact">Contact &amp; Support</h2>
+  <div class="contact-box">
+    <div class="icon">✉️</div>
+    <div>
+      <h3>support@tcviz.com</h3>
+      <p>Questions, ideas or a bug? Email <a href="mailto:support@tcviz.com">support@tcviz.com</a>, ask in
+      <a href="https://github.com/tinocallarisa-web/org-chart/discussions" target="_blank">GitHub Discussions</a> or
+      <a href="https://github.com/tinocallarisa-web/org-chart/issues/new/choose" target="_blank">open an issue</a>.
+      Please include your Power BI version and, if you can, a screenshot without personal data.</p>
+    </div>
+  </div>
+  <div class="cta">
+    <a class="btn btn-outline" href="use-case.html">Use cases</a>
+    <a class="btn btn-outline" href="changelog.html">Changelog</a>
+  </div>
+
+</div>
+
+<footer>
+  <div style="margin-bottom:10px;">
+    <a href="https://tinocallarisa-web.github.io/org-chart/privacy.html">Privacy Policy</a>
+    <a href="https://tinocallarisa-web.github.io/org-chart/terms.html">Terms of Service</a>
+    <a href="changelog.html">Changelog</a>
+    <a href="https://github.com/tinocallarisa-web/org-chart/discussions" target="_blank">Discussions</a>
+    <a href="https://github.com/tinocallarisa-web/org-chart" target="_blank">GitHub</a>
+    <a href="https://tcviz.com" target="_blank">tcviz.com</a>
+  </div>
+  <p>© 2026 TCViz · Org Chart by TCViz · <a href="mailto:support@tcviz.com">support@tcviz.com</a></p>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  // ── Nav highlight (in-page anchors only) ────────────────────────────────────
+  document.querySelectorAll('nav a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function () {
+      document.querySelectorAll('nav a').forEach(function (x) { x.classList.remove('active'); });
+      a.classList.add('active');
+    });
+  });
+
+  // ── Documentation search ────────────────────────────────────────────────────
+  var input  = document.getElementById('docsearch');
+  var clear  = document.getElementById('searchclear');
+  var status = document.getElementById('searchstatus');
+  var wrap   = document.querySelector('.wrap');
+  if (!input || !wrap) { return; }
+
+  var HIDE = 'is-hidden';
+
+  // Atomic searchable units: one FAQ entry, one table row, one card.
+  var units = [];
+  function add(el) {
+    if (units.some(function (u) { return u.el === el; })) { return; }
+    units.push({ el: el, html: el.innerHTML, text: (el.textContent || '').toLowerCase() });
+  }
+  wrap.querySelectorAll('details').forEach(add);
+  wrap.querySelectorAll('table tr').forEach(function (tr) {
+    if (tr.querySelector('th')) { return; }   // header rows follow their table
+    add(tr);
+  });
+  wrap.querySelectorAll('.card, .contact-box').forEach(add);
+
+  // Sections: an <h2> plus every sibling up to the next <h2>.
+  var sections = [];
+  var current = null;
+  Array.prototype.forEach.call(wrap.children, function (el) {
+    if (el.tagName === 'H2') {
+      current = { head: el, body: [] };
+      sections.push(current);
+    } else if (current) {
+      current.body.push(el);
+    }
+  });
+  // Each body element remembers which units live inside it.
+  sections.forEach(function (sec) {
+    sec.body.forEach(function (b) {
+      b._units = units.filter(function (u) { return b === u.el || b.contains(u.el); });
+      if (!b._units.length) { b._html = b.innerHTML; }
+    });
+  });
+
+  function escapeRe(t) { return t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+  function escapeHtml(t) {
+    return t.replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; });
+  }
+
+  function highlight(el, terms) {
+    var re = new RegExp('(' + terms.map(escapeRe).join('|') + ')', 'gi');
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+    var nodes = [], n;
+    while ((n = walker.nextNode())) { nodes.push(n); }
+    nodes.forEach(function (node) {
+      var txt = node.nodeValue;
+      re.lastIndex = 0;
+      if (!re.test(txt)) { return; }
+      re.lastIndex = 0;
+      var span = document.createElement('span');
+      span.innerHTML = escapeHtml(txt).replace(re, '<mark>$1</mark>');
+      node.parentNode.replaceChild(span, node);
+    });
+  }
+
+  function showAll() {
+    units.forEach(function (u) { u.el.classList.remove(HIDE); u.el.innerHTML = u.html; });
+    sections.forEach(function (sec) {
+      sec.head.classList.remove(HIDE);
+      sec.body.forEach(function (b) {
+        b.classList.remove(HIDE);
+        if (b._html !== undefined) { b.innerHTML = b._html; }
+      });
+    });
+    status.textContent = '';
+    clear.hidden = true;
+  }
+
+  function run(q) {
+    q = (q || '').trim();
+    if (q.length < 2) { showAll(); return; }
+    clear.hidden = false;
+
+    var terms = q.toLowerCase().split(/\s+/).filter(Boolean);
+    var hits = 0;
+
+    units.forEach(function (u) {
+      u.el.innerHTML = u.html;
+      var match = terms.every(function (t) { return u.text.indexOf(t) !== -1; });
+      u.el.classList.toggle(HIDE, !match);
+      if (match) {
+        hits++;
+        highlight(u.el, terms);
+        if (u.el.tagName === 'DETAILS') { u.el.open = true; }
+      }
+    });
+
+    sections.forEach(function (sec) {
+      var anyVisible = false;
+      sec.body.forEach(function (b) {
+        var visible;
+        if (b._units.length) {
+          visible = b._units.some(function (u) { return !u.el.classList.contains(HIDE); });
+        } else {
+          b.innerHTML = b._html;
+          var txt = (b.textContent || '').toLowerCase();
+          visible = terms.every(function (t) { return txt.indexOf(t) !== -1; });
+          if (visible) { highlight(b, terms); }
+        }
+        b.classList.toggle(HIDE, !visible);
+        if (visible) { anyVisible = true; }
+      });
+      sec.head.classList.toggle(HIDE, !anyVisible);
+    });
+
+    status.textContent = hits
+      ? hits + ' result' + (hits === 1 ? '' : 's') + ' for “' + q + '”'
+      : 'No results for “' + q + '”. Try a Format pane setting name, or email support@tcviz.com.';
+  }
+
+  var timer;
+  input.addEventListener('input', function () {
+    clearTimeout(timer);
+    timer = setTimeout(function () { run(input.value); }, 120);
+  });
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { input.value = ''; showAll(); }
+  });
+  clear.addEventListener('click', function () { input.value = ''; showAll(); input.focus(); });
+
+  // Deep link: support.html?q=license
+  var qp = new URLSearchParams(location.search).get('q');
+  if (qp) { input.value = qp; run(qp); }
+})();
+</script>
+</body>
+</html>

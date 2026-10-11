@@ -1,0 +1,41 @@
+{
+  "visual": {
+    "name": "orgChartTCViz",
+    "displayName": "Org Chart by TCViz",
+    "guid": "orgChartTCVizB36215279C0F4E9B93D25094C04F6842",
+    "visualClassName": "Visual",
+    "version": "1.0.0.0",
+    "description": "Free org chart: employee and manager IDs, photos, departments, breadcrumb navigation.",
+    "supportUrl": "https://tinocallarisa-web.github.io/org-chart/support.html",
+    "privacyTermsLink": "https://tinocallarisa-web.github.io/org-chart/privacy.html",
+    "gitHubUrl": "https://github.com/tinocallarisa-web/org-chart"
+  },
+  "author": {
+    "name": "TCViz",
+    "email": "support@tcviz.com"
+  },
+  "apiVersion": "5.11.1",
+  "assets": {
+    "icon": "assets/icon.png"
+  },
+  "externalJS": [],
+  "stringResources": [
+    "stringResources/en-US/resources.resjson",
+    "stringResources/es-ES/resources.resjson",
+    "stringResources/fr-FR/resources.resjson",
+    "stringResources/de-DE/resources.resjson",
+    "stringResources/it-IT/resources.resjson",
+    "stringResources/pt-BR/resources.resjson",
+    "stringResources/nl-NL/resources.resjson",
+    "stringResources/pl-PL/resources.resjson",
+    "stringResources/ja-JP/resources.resjson",
+    "stringResources/zh-CN/resources.resjson",
+    "stringResources/ko-KR/resources.resjson",
+    "stringResources/pt-PT/resources.resjson"
+  ],
+  "style": "style/visual.less",
+  "capabilities": "capabilities.json",
+  "privacyTerms": {
+    "link": "https://tinocallarisa-web.github.io/org-chart/privacy.html"
+  }
+}

@@ -1,0 +1,784 @@
+{
+  "dataRoles": [
+    {
+      "name": "employee",
+      "kind": "Grouping",
+      "displayName": "Employee ID",
+      "displayNameKey": "Role_employee",
+      "description": "A unique ID for each person or position."
+    },
+    {
+      "name": "manager",
+      "kind": "Grouping",
+      "displayName": "Manager ID",
+      "displayNameKey": "Role_manager",
+      "description": "The Employee ID of each person's manager. Empty for the top of the chart."
+    },
+    {
+      "name": "name",
+      "kind": "Grouping",
+      "displayName": "Name",
+      "displayNameKey": "Role_name",
+      "description": "Shown on the card. Empty name = vacant position."
+    },
+    {
+      "name": "dotted",
+      "kind": "Grouping",
+      "displayName": "Dotted-line manager ID",
+      "displayNameKey": "Role_dotted",
+      "description": "Optional second manager (matrix reporting). Drawn as a dashed line."
+    },
+    {
+      "name": "title",
+      "kind": "Grouping",
+      "displayName": "Job title",
+      "displayNameKey": "Role_title",
+      "description": "Second line of the card."
+    },
+    {
+      "name": "department",
+      "kind": "Grouping",
+      "displayName": "Department",
+      "displayNameKey": "Role_department",
+      "description": "Colours the cards and groups teams."
+    },
+    {
+      "name": "photo",
+      "kind": "Grouping",
+      "displayName": "Photo",
+      "displayNameKey": "Role_photo",
+      "description": "A Base64 image (data:image/...) stored in your model. Web links are not loaded. Without a photo, the initials."
+    },
+    {
+      "name": "value",
+      "kind": "Measure",
+      "displayName": "Value",
+      "displayNameKey": "Role_value",
+      "description": "Shown on each card and added up for each manager's whole team: cost, FTE, sales..."
+    },
+    {
+      "name": "colorBy",
+      "kind": "Measure",
+      "displayName": "Color value",
+      "displayNameKey": "Role_colorBy",
+      "description": "Colours the cards on a gradient when Colors > Color by is Color value."
+    },
+    {
+      "name": "tooltips",
+      "kind": "Measure",
+      "displayName": "Tooltips",
+      "displayNameKey": "Role_tooltips",
+      "description": "Extra values in the tooltip."
+    }
+  ],
+  "objects": {
+    "style": {
+      "properties": {
+        "template": {
+          "displayName": "Template",
+          "displayNameKey": "Prop_style_template",
+          "type": {
+            "enumeration": [
+              {
+                "value": "none",
+                "displayName": "none"
+              },
+              {
+                "value": "clean",
+                "displayName": "clean"
+              },
+              {
+                "value": "corporate",
+                "displayName": "corporate"
+              },
+              {
+                "value": "colorful",
+                "displayName": "colorful"
+              },
+              {
+                "value": "minimal",
+                "displayName": "minimal"
+              },
+              {
+                "value": "compact",
+                "displayName": "compact"
+              }
+            ]
+          }
+        }
+      },
+      "displayName": "Style template",
+      "displayNameKey": "Obj_style"
+    },
+    "cards": {
+      "properties": {
+        "width": {
+          "displayName": "Card width",
+          "displayNameKey": "Prop_cards_width",
+          "type": {
+            "numeric": true
+          }
+        },
+        "height": {
+          "displayName": "Card height",
+          "displayNameKey": "Prop_cards_height",
+          "type": {
+            "numeric": true
+          }
+        },
+        "showPhoto": {
+          "displayName": "Show photo",
+          "displayNameKey": "Prop_cards_showPhoto",
+          "type": {
+            "bool": true
+          }
+        },
+        "photoShape": {
+          "displayName": "Photo shape",
+          "displayNameKey": "Prop_cards_photoShape",
+          "type": {
+            "enumeration": [
+              {
+                "value": "circle",
+                "displayName": "circle"
+              },
+              {
+                "value": "rounded",
+                "displayName": "rounded"
+              },
+              {
+                "value": "square",
+                "displayName": "square"
+              }
+            ]
+          }
+        },
+        "showTitle": {
+          "displayName": "Show job title",
+          "displayNameKey": "Prop_cards_showTitle",
+          "type": {
+            "bool": true
+          }
+        },
+        "showDepartment": {
+          "displayName": "Show department",
+          "displayNameKey": "Prop_cards_showDepartment",
+          "type": {
+            "bool": true
+          }
+        },
+        "count": {
+          "displayName": "Team size",
+          "displayNameKey": "Prop_cards_count",
+          "type": {
+            "enumeration": [
+              {
+                "value": "none",
+                "displayName": "none"
+              },
+              {
+                "value": "direct",
+                "displayName": "direct"
+              },
+              {
+                "value": "total",
+                "displayName": "total"
+              },
+              {
+                "value": "both",
+                "displayName": "both"
+              }
+            ]
+          },
+          "description": "Direct reports, the whole team under each person, or both."
+        },
+        "showValue": {
+          "displayName": "Show value",
+          "displayNameKey": "Prop_cards_showValue",
+          "type": {
+            "bool": true
+          }
+        },
+        "fontFamily": {
+          "displayName": "Font",
+          "displayNameKey": "Prop_cards_fontFamily",
+          "type": {
+            "formatting": {
+              "fontFamily": true
+            }
+          }
+        },
+        "nameSize": {
+          "displayName": "Name size",
+          "displayNameKey": "Prop_cards_nameSize",
+          "type": {
+            "numeric": true
+          }
+        },
+        "nameColor": {
+          "displayName": "Name color",
+          "displayNameKey": "Prop_cards_nameColor",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "textColor": {
+          "displayName": "Text color",
+          "displayNameKey": "Prop_cards_textColor",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "fill": {
+          "displayName": "Card color",
+          "displayNameKey": "Prop_cards_fill",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          },
+          "description": "Supports conditional formatting (fx).",
+          "rule": {
+            "inputRole": "value",
+            "output": {
+              "property": "fill",
+              "selector": [
+                "employee"
+              ]
+            }
+          }
+        },
+        "borderColor": {
+          "displayName": "Border color",
+          "displayNameKey": "Prop_cards_borderColor",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "borderWidth": {
+          "displayName": "Border width",
+          "displayNameKey": "Prop_cards_borderWidth",
+          "type": {
+            "numeric": true
+          }
+        },
+        "radius": {
+          "displayName": "Corner radius",
+          "displayNameKey": "Prop_cards_radius",
+          "type": {
+            "numeric": true
+          }
+        },
+        "accent": {
+          "displayName": "Department band",
+          "displayNameKey": "Prop_cards_accent",
+          "type": {
+            "enumeration": [
+              {
+                "value": "top",
+                "displayName": "top"
+              },
+              {
+                "value": "left",
+                "displayName": "left"
+              },
+              {
+                "value": "none",
+                "displayName": "none"
+              }
+            ]
+          },
+          "description": "A band in the department colour."
+        },
+        "shadow": {
+          "displayName": "Shadow",
+          "displayNameKey": "Prop_cards_shadow",
+          "type": {
+            "bool": true
+          }
+        }
+      },
+      "displayName": "Cards",
+      "displayNameKey": "Obj_cards"
+    },
+    "layout": {
+      "properties": {
+        "orientation": {
+          "displayName": "Orientation",
+          "displayNameKey": "Prop_layout_orientation",
+          "type": {
+            "enumeration": [
+              {
+                "value": "td",
+                "displayName": "td"
+              },
+              {
+                "value": "lr",
+                "displayName": "lr"
+              }
+            ]
+          }
+        },
+        "compact": {
+          "displayName": "Compact",
+          "displayNameKey": "Prop_layout_compact",
+          "type": {
+            "bool": true
+          },
+          "description": "People without reports are listed in a column under their manager: a wide team fits on screen."
+        },
+        "gapSibling": {
+          "displayName": "Space between cards",
+          "displayNameKey": "Prop_layout_gapSibling",
+          "type": {
+            "numeric": true
+          }
+        },
+        "gapLevel": {
+          "displayName": "Space between levels",
+          "displayNameKey": "Prop_layout_gapLevel",
+          "type": {
+            "numeric": true
+          }
+        },
+        "autoDepth": {
+          "displayName": "Open levels to fit",
+          "displayNameKey": "Prop_layout_autoDepth",
+          "type": {
+            "bool": true
+          },
+          "description": "Opens as many levels as fit with names still readable. Off: Levels open at start."
+        },
+        "initialDepth": {
+          "displayName": "Levels open at start",
+          "displayNameKey": "Prop_layout_initialDepth",
+          "type": {
+            "numeric": true
+          },
+          "description": "0 opens every level."
+        },
+        "clusters": {
+          "displayName": "Group departments",
+          "displayNameKey": "Prop_layout_clusters",
+          "type": {
+            "bool": true
+          },
+          "description": "Draws a box around each department's team."
+        },
+        "selectTeam": {
+          "displayName": "Click selects the whole team",
+          "displayNameKey": "Prop_layout_selectTeam",
+          "type": {
+            "bool": true
+          },
+          "description": "Clicking a manager filters the page by everyone under them."
+        }
+      },
+      "displayName": "Layout",
+      "displayNameKey": "Obj_layout"
+    },
+    "links": {
+      "properties": {
+        "shape": {
+          "displayName": "Shape",
+          "displayNameKey": "Prop_links_shape",
+          "type": {
+            "enumeration": [
+              {
+                "value": "elbow",
+                "displayName": "elbow"
+              },
+              {
+                "value": "straight",
+                "displayName": "straight"
+              },
+              {
+                "value": "curved",
+                "displayName": "curved"
+              }
+            ]
+          }
+        },
+        "color": {
+          "displayName": "Color",
+          "displayNameKey": "Prop_links_color",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "width": {
+          "displayName": "Width",
+          "displayNameKey": "Prop_links_width",
+          "type": {
+            "numeric": true
+          }
+        },
+        "dashed": {
+          "displayName": "Dashed",
+          "displayNameKey": "Prop_links_dashed",
+          "type": {
+            "bool": true
+          }
+        },
+        "dotted": {
+          "displayName": "Show dotted-line managers",
+          "displayNameKey": "Prop_links_dotted",
+          "type": {
+            "bool": true
+          }
+        },
+        "byDepartment": {
+          "displayName": "Department color",
+          "displayNameKey": "Prop_links_byDepartment",
+          "type": {
+            "bool": true
+          }
+        },
+        "label": {
+          "displayName": "Label",
+          "displayNameKey": "Prop_links_label",
+          "type": {
+            "enumeration": [
+              {
+                "value": "none",
+                "displayName": "none"
+              },
+              {
+                "value": "team",
+                "displayName": "team"
+              },
+              {
+                "value": "value",
+                "displayName": "value"
+              }
+            ]
+          },
+          "description": "On each line: the size of the team below, or its value."
+        }
+      },
+      "displayName": "Lines",
+      "displayNameKey": "Obj_links"
+    },
+    "colors": {
+      "properties": {
+        "mode": {
+          "displayName": "Color by",
+          "displayNameKey": "Prop_colors_mode",
+          "type": {
+            "enumeration": [
+              {
+                "value": "department",
+                "displayName": "department"
+              },
+              {
+                "value": "level",
+                "displayName": "level"
+              },
+              {
+                "value": "value",
+                "displayName": "value"
+              },
+              {
+                "value": "single",
+                "displayName": "single"
+              }
+            ]
+          }
+        },
+        "tint": {
+          "displayName": "Tint cards",
+          "displayNameKey": "Prop_colors_tint",
+          "type": {
+            "bool": true
+          },
+          "description": "Fills each card with a light shade of its department colour."
+        },
+        "palette": {
+          "displayName": "Palette",
+          "displayNameKey": "Prop_colors_palette",
+          "type": {
+            "enumeration": [
+              {
+                "value": "tcviz",
+                "displayName": "tcviz"
+              },
+              {
+                "value": "okabe",
+                "displayName": "okabe"
+              },
+              {
+                "value": "tolBright",
+                "displayName": "tolBright"
+              },
+              {
+                "value": "tolMuted",
+                "displayName": "tolMuted"
+              },
+              {
+                "value": "tolVibrant",
+                "displayName": "tolVibrant"
+              },
+              {
+                "value": "tableau",
+                "displayName": "tableau"
+              },
+              {
+                "value": "vivid",
+                "displayName": "vivid"
+              },
+              {
+                "value": "pastel",
+                "displayName": "pastel"
+              },
+              {
+                "value": "earth",
+                "displayName": "earth"
+              },
+              {
+                "value": "ocean",
+                "displayName": "ocean"
+              },
+              {
+                "value": "sunset",
+                "displayName": "sunset"
+              },
+              {
+                "value": "forest",
+                "displayName": "forest"
+              },
+              {
+                "value": "candy",
+                "displayName": "candy"
+              },
+              {
+                "value": "corporate",
+                "displayName": "corporate"
+              },
+              {
+                "value": "neon",
+                "displayName": "neon"
+              },
+              {
+                "value": "retro",
+                "displayName": "retro"
+              }
+            ]
+          }
+        },
+        "lowColor": {
+          "displayName": "Low color",
+          "displayNameKey": "Prop_colors_lowColor",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "highColor": {
+          "displayName": "High color",
+          "displayNameKey": "Prop_colors_highColor",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "background": {
+          "displayName": "Background",
+          "displayNameKey": "Prop_colors_background",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        }
+      },
+      "displayName": "Colors",
+      "displayNameKey": "Obj_colors"
+    },
+    "toolbar": {
+      "properties": {
+        "show": {
+          "displayName": "Show toolbar",
+          "displayNameKey": "Prop_toolbar_show",
+          "type": {
+            "bool": true
+          }
+        },
+        "search": {
+          "displayName": "Search",
+          "displayNameKey": "Prop_toolbar_search",
+          "type": {
+            "bool": true
+          }
+        },
+        "minimap": {
+          "displayName": "Minimap",
+          "displayNameKey": "Prop_toolbar_minimap",
+          "type": {
+            "bool": true
+          }
+        },
+        "breadcrumb": {
+          "displayName": "Breadcrumb",
+          "displayNameKey": "Prop_toolbar_breadcrumb",
+          "type": {
+            "bool": true
+          }
+        }
+      },
+      "displayName": "Toolbar",
+      "displayNameKey": "Obj_toolbar"
+    },
+    "state": {
+      "properties": {
+        "view": {
+          "type": {
+            "text": true
+          }
+        }
+      }
+    }
+  },
+  "dataViewMappings": [
+    {
+      "conditions": [
+        {
+          "employee": {
+            "max": 1
+          },
+          "manager": {
+            "max": 1
+          },
+          "dotted": {
+            "max": 1
+          },
+          "name": {
+            "max": 1
+          },
+          "title": {
+            "max": 1
+          },
+          "department": {
+            "max": 1
+          },
+          "photo": {
+            "max": 1
+          },
+          "value": {
+            "max": 1
+          },
+          "colorBy": {
+            "max": 1
+          }
+        }
+      ],
+      "categorical": {
+        "categories": {
+          "select": [
+            {
+              "bind": {
+                "to": "employee"
+              }
+            },
+            {
+              "bind": {
+                "to": "manager"
+              }
+            },
+            {
+              "bind": {
+                "to": "dotted"
+              }
+            },
+            {
+              "bind": {
+                "to": "name"
+              }
+            },
+            {
+              "bind": {
+                "to": "title"
+              }
+            },
+            {
+              "bind": {
+                "to": "department"
+              }
+            },
+            {
+              "bind": {
+                "to": "photo"
+              }
+            }
+          ],
+          "dataReductionAlgorithm": {
+            "window": {
+              "count": 30000
+            }
+          }
+        },
+        "values": {
+          "select": [
+            {
+              "bind": {
+                "to": "value"
+              }
+            },
+            {
+              "bind": {
+                "to": "colorBy"
+              }
+            },
+            {
+              "bind": {
+                "to": "tooltips"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "tooltips": {
+    "supportedTypes": {
+      "default": true,
+      "canvas": true
+    },
+    "roles": [
+      "tooltips"
+    ]
+  },
+  "supportsHighlight": true,
+  "supportsLandingPage": true,
+  "supportsEmptyDataView": true,
+  "supportsKeyboardFocus": true,
+  "supportsMultiVisualSelection": true,
+  "privileges": [],
+  "supportsOnObjectFormatting": true,
+  "enablePointerEventsFormatMode": true
+}
