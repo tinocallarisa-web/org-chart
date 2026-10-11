@@ -1,0 +1,130 @@
+# Org Chart by TCViz — Tips & Hints (v1.0.0.0)
+
+An org chart answers two questions: **who reports to whom, and how big each team is.** This page
+is the short version of everything worth knowing.
+Full documentation, with search: https://tinocallarisa-web.github.io/org-chart/support.html
+
+---
+
+## Quick start
+
+1. Drag the person's ID to **Employee ID**.
+2. Drag their manager's ID to **Manager ID**. The person with an empty Manager ID is the top.
+3. Add **Name**, **Job title**, **Department** and **Photo** for the cards, and a measure in **Value**.
+
+> **The single most common mistake** is giving the two IDs different types or formats — numbers
+> in one column, text in the other, leading zeros or spaces. Nobody finds their manager, everyone
+> appears at the top, and the warning icon lists the IDs it could not match.
+
+---
+
+## Field wells
+
+| Well | Kind | What it does |
+|---|---|---|
+| **Employee ID** | Grouping | A unique ID per person or position. Required. |
+| **Manager ID** | Grouping | The manager's Employee ID. Empty, or the person's own ID, means a top. Required. |
+| **Dotted-line manager ID** | Grouping | A second manager, drawn as a dashed curved line. |
+| **Name** | Grouping | Main text of the card. Empty name = vacancy. |
+| **Job title** | Grouping | Second line of the card. |
+| **Department** | Grouping | Colours the cards and can group teams. |
+| **Photo** | Grouping | Base64 image (`data:image/jpeg;base64,…`). Without it: initials. |
+| **Value** | Measure | Shown per card and added up for each manager's team. |
+| **Color value** | Measure | Gradient colour when Color by is Color value. |
+| **Tooltips** | Measure | Extra values on hover. |
+
+---
+
+## Large organisations
+
+- **Open levels to fit** (on by default) opens as many levels as fit with names still readable,
+  and folds the rest. Each folded card shows **+N**, its direct reports.
+- The toolbar opens and closes **one level at a time** across the whole chart (⌄ ⌃), or everything
+  at once (double arrows). The button under a card opens or closes just that branch; so does a
+  double-click.
+- **Compact** (on by default, top to bottom only) lists people without reports in a column under
+  their manager: a team of twelve takes one column instead of twelve.
+- **Show only this team** — the button in the corner of a manager's card — draws just that branch,
+  with the breadcrumb on top (*Everyone › CEO › CFO*) to climb back one step at a time.
+- **Search** finds by name, job title, department or ID, opens the branch, centres the person and
+  marks the card. Press Enter again for the next match.
+- Zoom with the toolbar or **Ctrl + mouse wheel**; pan by dragging the background or with the wheel;
+  the **minimap** jumps anywhere.
+- Open branches and the focused team are **kept** when filters change and when the data refreshes.
+
+---
+
+## Photos
+
+- Store them in the model as Base64 text starting with `data:image/` (PNG, JPEG, GIF, SVG, WebP).
+- Keep them **small**: Power BI cuts text values longer than 32,766 characters. A 96×96 JPEG is
+  about 5,000 characters and looks sharp on a card.
+- Web links are **not loaded**, on purpose: the visual has no network permission.
+- **Photo ring** draws a ring in the department (or level) colour, so the palette shows on cards
+  with photos too.
+
+---
+
+## Format pane
+
+- **Style template** — Clean, Corporate, Colorful, Minimal, Compact. A template only fills in what
+  you have not set yourself.
+- **Cards** — width and height, photo and its shape and ring, job title, department, team size
+  (direct, whole team, both), value, font and sizes, card colour with **fx**, border, corner
+  radius, department band (top, left, none), shadow, selection colour.
+- **Layout** — top to bottom or left to right, compact, spacing, open levels to fit, levels open at
+  start, department groups, *Click selects the whole team*.
+- **Lines** — elbow, straight or curved; colour, width, dashed; department colour; dotted-line
+  managers; labels with team size or team value.
+- **Colors** — by department, level, value or a single colour; tint cards and tint strength;
+  16 palettes (4 colour-blind safe); low and high colours; background.
+- **Toolbar** — show or hide the toolbar, search, minimap and breadcrumb.
+
+---
+
+## Filtering the report
+
+- **Click a manager** and the page filters by **everyone under them**; turn off *Click selects the
+  whole team* to filter by the person only.
+- Click the same card again to clear, **Ctrl+click** to add, click the background to clear.
+- **Bookmarks** keep the selection: applying one selects the same people, opens their branches and
+  centres them. The branches you opened by hand are not part of a bookmark — that is how bookmarks
+  work for all custom visuals.
+
+---
+
+## Keyboard
+
+| Key | Top to bottom | Left to right |
+|---|---|---|
+| ↑ / ← | Manager / previous colleague | Previous colleague / manager |
+| ↓ / → | First report / next colleague | Next colleague / first report |
+| Home | The top | The top |
+| Enter, Space | Select (Ctrl to add) | Select (Ctrl to add) |
+| + / - | Expand / collapse | Expand / collapse |
+| F | Show only this team | Show only this team |
+| Esc | Clear the selection | Clear the selection |
+| Shift+F10 | Context menu | Context menu |
+
+---
+
+## Real data
+
+- **Several people without a manager** — several charts side by side.
+- **A Manager ID that is not an employee** — that team appears at the top; the warning icon lists it.
+- **A reporting loop** — broken where it closes; the warning icon says where.
+- **A repeated Employee ID** — the first row is used; the warning icon lists it.
+- **More than 30,000 rows** — the Power BI service sends them all; Desktop sends only the first
+  30,000 to custom visuals, and the warning icon says so.
+
+---
+
+## Not only people
+
+Any table with an ID and its parent's ID: a chart of accounts, cost centres, legal entities,
+a product tree. Put the item in Employee ID and its parent in Manager ID.
+
+---
+
+Free — every feature, no licence, no limit on people. Questions:
+https://github.com/tinocallarisa-web/org-chart/discussions · support@tcviz.com
