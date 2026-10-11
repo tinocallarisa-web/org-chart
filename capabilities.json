@@ -318,6 +318,18 @@
           "type": {
             "bool": true
           }
+        },
+        "selColor": {
+          "displayName": "Selection color",
+          "displayNameKey": "Prop_cards_selColor",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          },
+          "description": "Border of the selected cards."
         }
       },
       "displayName": "Cards",

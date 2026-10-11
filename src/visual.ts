@@ -27,7 +27,7 @@ interface Settings {
     template: string;
     width: number; height: number; showPhoto: boolean; photoShape: string; photoRing: boolean; tintStrength: number; showTitle: boolean; showDepartment: boolean;
     count: string; showValue: boolean; fontFamily: string; nameSize: number; nameColor: string; textColor: string;
-    fill: string; borderColor: string; borderWidth: number; radius: number; accent: string; shadow: boolean;
+    fill: string; borderColor: string; borderWidth: number; radius: number; accent: string; shadow: boolean; selColor: string;
     orientation: string; compact: boolean; gapSibling: number; gapLevel: number; autoDepth: boolean; initialDepth: number; clusters: boolean; selectTeam: boolean;
     linkShape: string; linkColor: string; linkWidth: number; dashed: boolean; dotted: boolean; linkByDept: boolean; linkLabel: string;
     colorMode: string; palette: string; lowColor: string; highColor: string; background: string;
@@ -41,7 +41,7 @@ const DEFAULTS: Settings = {
     width: 200, height: 64, showPhoto: true, photoShape: "circle", photoRing: true, tintStrength: 22, showTitle: true, showDepartment: false,
     count: "direct", showValue: true, fontFamily: "'Segoe UI', wf_segoe-ui_normal, helvetica, arial, sans-serif", nameSize: 12,
     nameColor: "#3D3929", textColor: "#83827D",
-    fill: "#FFFFFF", borderColor: "#DAD9D4", borderWidth: 1, radius: 8, accent: "top", shadow: false,
+    fill: "#FFFFFF", borderColor: "#DAD9D4", borderWidth: 1, radius: 8, accent: "top", shadow: false, selColor: "#1F4E80",
     orientation: "td", compact: true, gapSibling: 16, gapLevel: 40, autoDepth: true, initialDepth: 3, clusters: false, selectTeam: true,
     linkShape: "elbow", linkColor: "#B5B3AA", linkWidth: 1.5, dashed: false, dotted: true, linkByDept: false, linkLabel: "none",
     colorMode: "department", palette: "tcviz", lowColor: "#D6E4F2", highColor: "#1F4E80", background: "",
@@ -80,7 +80,7 @@ function readSettings(objects: Objects): Settings {
         fontFamily: pick("cards", "fontFamily", "fontFamily"), nameSize: pick("cards", "nameSize", "nameSize"),
         nameColor: pick("cards", "nameColor", "nameColor"), textColor: pick("cards", "textColor", "textColor"),
         fill: pick("cards", "fill", "fill"), borderColor: pick("cards", "borderColor", "borderColor"), borderWidth: pick("cards", "borderWidth", "borderWidth"),
-        radius: pick("cards", "radius", "radius"), accent: pick("cards", "accent", "accent"), shadow: pick("cards", "shadow", "shadow"),
+        radius: pick("cards", "radius", "radius"), accent: pick("cards", "accent", "accent"), shadow: pick("cards", "shadow", "shadow"), selColor: pick("cards", "selColor", "selColor"),
         orientation: pick("layout", "orientation", "orientation"), compact: pick("layout", "compact", "compact"),
         gapSibling: pick("layout", "gapSibling", "gapSibling"), gapLevel: pick("layout", "gapLevel", "gapLevel"),
         autoDepth: pick("layout", "autoDepth", "autoDepth"), initialDepth: pick("layout", "initialDepth", "initialDepth"), clusters: pick("layout", "clusters", "clusters"), selectTeam: pick("layout", "selectTeam", "selectTeam"),
@@ -814,6 +814,12 @@ export class Visual implements IVisual {
             g.appendChild(tg);
         }
 
+        // Marco de selección: oculto hasta que la tarjeta esté seleccionada (paintSelection).
+        const selRing = this.el("rect", { class: "selring", x: -3, y: -3, width: cw + 6, height: ch + 6, rx: clamp(s.radius, 0, 30) + 3, fill: "none",
+            stroke: hc ? (pal.foregroundSelected?.value ?? fg) : (s.selColor || "#1F4E80"), "stroke-width": 2.5 });
+        selRing.style.display = "none";
+        g.appendChild(selRing);
+
         if (this.searchMark === p.node.id) {
             g.appendChild(this.el("rect", { x: -4, y: -4, width: cw + 8, height: ch + 8, rx: clamp(s.radius, 0, 30) + 4, fill: "none", stroke: hc ? fg : "#D9A441", "stroke-width": 2.5 }));
         }
@@ -939,6 +945,8 @@ export class Visual implements IVisual {
             const on = has ? sel.some(s => (s as any).equals?.(p.id)) : p.highlighted;
             g.style.opacity = on ? "1" : "0.35";
             g.setAttribute("aria-selected", String(has && on));
+            const ring = g.querySelector<SVGElement>("rect.selring");
+            if (ring) ring.style.display = has && on ? "" : "none";
         });
     }
 
@@ -1379,6 +1387,7 @@ export class Visual implements IVisual {
                     num("cards", "radius", "Corner radius", s.radius),
                     dd("cards", "accent", "Department band", s.accent, [["top", "Enum_acc_top", "Top"], ["left", "Enum_acc_left", "Left"], ["none", "Enum_acc_none", "None"]]),
                     tog("cards", "shadow", "Shadow", s.shadow),
+                    col("cards", "selColor", "Selection color", s.selColor),
                 ]),
                 card("layout", "Layout", [
                     dd("layout", "orientation", "Orientation", s.orientation, [["td", "Enum_or_td", "Top to bottom"], ["lr", "Enum_or_lr", "Left to right"]]),
