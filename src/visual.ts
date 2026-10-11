@@ -146,6 +146,8 @@ export class Visual implements IVisual {
     private lastState = "";
     private persistTimer: any = null;
     private autoDepthCache = { key: "", depth: 0 };
+    /** Niveles elegidos con los botones de subir/bajar un nivel (null: los decide la regla del panel). */
+    private levelDepth: number | null = null;
     private dataKey = "";
     private layoutKey = "";
     private deptColors = new Map<string, string>();
@@ -445,12 +447,13 @@ export class Visual implements IVisual {
             this.opened = new Set(Array.isArray(o.o) ? o.o.map(String) : []);
             this.closed = new Set(Array.isArray(o.c) ? o.c.map(String) : []);
             this.focusId = o.f ? String(o.f) : null;
+            this.levelDepth = typeof o.d === "number" && o.d > 0 ? o.d : null;
             this.lastState = raw;
         } catch { /* estado ilegible: se ignora */ }
     }
 
     private persistState(): void {
-        const raw = JSON.stringify({ m: this.viewMode, o: Array.from(this.opened), c: Array.from(this.closed), f: this.focusId });
+        const raw = JSON.stringify({ m: this.viewMode, o: Array.from(this.opened), c: Array.from(this.closed), f: this.focusId, d: this.levelDepth });
         if (raw === this.lastState) return;
         this.lastState = raw;
         clearTimeout(this.persistTimer);
@@ -561,7 +564,7 @@ export class Visual implements IVisual {
 
         const cw = clamp(s.width, 80, 600), ch = clamp(s.height, 28, 300);
         const lr = s.orientation === "lr";
-        this.collapsed = this.computeCollapsed(this.viewMode === "depth" ? this.effectiveDepth(cw, ch, lr) : 0);
+        this.collapsed = this.computeCollapsed(this.viewMode === "depth" ? (this.levelDepth ?? this.effectiveDepth(cw, ch, lr)) : 0);
         this.layout = layoutForest(this.visibleRoots(), {
             nodeW: cw, nodeH: ch, gapSibling: clamp(s.gapSibling, 0, 200), gapLevel: clamp(s.gapLevel, 12, 300),
             // Compacto solo de arriba abajo: de izquierda a derecha los equipos ya van en columna.
@@ -1155,13 +1158,36 @@ export class Visual implements IVisual {
             this.button("Zoom out", "M5 12h14", () => this.zoomAt(1 / 1.25, this.W / 2, this.H / 2)),
             this.button("Zoom in", "M12 5v14M5 12h14", () => this.zoomAt(1.25, this.W / 2, this.H / 2)),
             this.button("Fit", "M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5", () => { this.fitView(); this.applyTransform(); }),
-            this.button("Expand all", "M7 10l5 5 5-5", () => { this.viewMode = "all"; this.opened.clear(); this.closed.clear(); this.persistState(); this.needsFit = true; this.rerender(); }),
-            this.button("Collapse all", "M7 14l5-5 5 5", () => {
+            this.button("Expand one level", "M7 10l5 5 5-5", () => this.stepLevel(1)),
+            this.button("Collapse one level", "M7 14l5-5 5 5", () => this.stepLevel(-1)),
+            this.button("Expand all", "M7 7l5 5 5-5M7 13l5 5 5-5", () => { this.levelDepth = null; this.viewMode = "all"; this.opened.clear(); this.closed.clear(); this.persistState(); this.needsFit = true; this.rerender(); }),
+            this.button("Collapse all", "M7 11l5-5 5 5M7 17l5-5 5 5", () => {
                 if (!this.forest) return;
-                this.viewMode = "none"; this.opened.clear(); this.closed.clear();
+                this.levelDepth = null; this.viewMode = "none"; this.opened.clear(); this.closed.clear();
                 this.persistState(); this.needsFit = true; this.rerender();
             }),
         );
+    }
+
+    /** Niveles visibles ahora mismo, contando desde la raíz (o desde el equipo enfocado). */
+    private visibleLevels(): number {
+        const L = this.layout; if (!L || !L.placed.length) return 1;
+        const base = this.focusId ? (this.forest?.nodes.get(this.focusId)?.depth ?? 0) : 0;
+        let max = 0;
+        for (const p of L.placed) max = Math.max(max, p.node.depth - base);
+        return max + 1;
+    }
+
+    /** Bajar o subir un nivel en toda la vista: deja la regla en "hasta el nivel N" y borra las excepciones. */
+    private stepLevel(dir: number): void {
+        if (!this.forest) return;
+        let maxD = 1;
+        const base = this.focusId ? (this.forest.nodes.get(this.focusId)?.depth ?? 0) : 0;
+        for (const n of this.forest.nodes.values()) maxD = Math.max(maxD, n.depth - base + 1);
+        const cur = this.visibleLevels();
+        this.levelDepth = clamp(cur + dir, 1, maxD);
+        this.viewMode = "depth"; this.opened.clear(); this.closed.clear();
+        this.persistState(); this.needsFit = true; this.rerender();
     }
 
     private renderToolbarState(): void {
@@ -1172,7 +1198,8 @@ export class Visual implements IVisual {
             this.searchInput.placeholder = this.t("UI_Search", "Find a person");
             this.searchInput.setAttribute("aria-label", this.t("UI_Search", "Find a person"));
         }
-        const labels = [this.t("UI_ZoomOut", "Zoom out"), this.t("UI_ZoomIn", "Zoom in"), this.t("UI_Fit", "Fit to view"), this.t("UI_ExpandAll", "Expand all"), this.t("UI_CollapseAll", "Collapse all")];
+        const labels = [this.t("UI_ZoomOut", "Zoom out"), this.t("UI_ZoomIn", "Zoom in"), this.t("UI_Fit", "Fit to view"),
+            this.t("UI_ExpandLevel", "Expand one level"), this.t("UI_CollapseLevel", "Collapse one level"), this.t("UI_ExpandAll", "Expand all"), this.t("UI_CollapseAll", "Collapse all")];
         this.toolbarEl.querySelectorAll("button").forEach((b, i) => { if (labels[i]) { b.title = labels[i]; b.setAttribute("aria-label", labels[i]); } });
     }
 
