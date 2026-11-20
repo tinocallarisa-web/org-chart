@@ -32,7 +32,7 @@ window.powerbi = { visuals: { plugins: {} }, extensibility: {} };
   hostCapabilities: { allowInteractions: window.__allow !== false }, locale: window.__locale || 'en-US',
   colorPalette: { isHighContrast: !!window.__sysHC, foreground:{value: window.__sysHC ? '#FFFF00' : '#252423'}, background:{value: window.__sysHC ? '#000000' : '#FFFFFF'},
     foregroundNeutralSecondary:{value:'#605E5C'}, foregroundSelected:{value:'#1AEBFF'},
-    getColor(k){ const c=['#118DFF','#12239E','#E66C37','#6B007B','#E044A7','#744EC2']; let h=0; for (const ch of String(k)) h=(h*31+ch.charCodeAt(0))>>>0; return {value:c[h%c.length]}; } },
+    getColor(k){ const c=['#118DFF','#12239E','#E66C37','#6B007B','#E044A7','#744EC2']; window.__cols = window.__cols || {}; if (!(k in __cols)) __cols[k] = c[Object.keys(__cols).length % c.length]; return {value:__cols[k]}; } },
   fetchMoreData(){ return false; }, persistProperties(p){ __persist.push(p); }, launchUrl(){},
   displayWarningIcon(t, m){ __warn.push(m); }, hideWarningIcon(){},
  };
@@ -75,6 +75,28 @@ def dv(objects=None, dyn=False, gente=None, value=True):
             "categorical": {"categories": cats, "values": vals}}
 
 
+DEMO = "C:/tcviz/datos/demo_rtm/csv_en/dim_org_chart.csv"
+EQUIPO = {"DIR-01": "Management", "JA-01": "Barcelona", "JA-02": "North & Central", "JA-03": "South & West", "JKA-01": "Key Accounts"}
+
+
+def dv_demo(objects=None):
+    """Equipo comercial de Begudes Nord de la demo (23 personas ficticias, foto de Unsplash elegida por el nombre).
+    Departamento = el equipo de cada área (su color); ventas ficticias por persona de campo, los jefes sin ventas propias."""
+    import csv, random
+    rows = list(csv.DictReader(io.open(DEMO, encoding="utf-8-sig")))
+    rnd = random.Random(7)
+    def equipo(r):
+        return EQUIPO.get(r["employee_id"]) or EQUIPO.get(r["manager_id"], "Management")
+    g = [(r["employee_id"], r["manager_id"], " ".join(r["name"].split()[:2]), r["job_title"], equipo(r), r["photo"],
+          None if r["employee_id"] in EQUIPO else round(rnd.uniform(380, 1250), 1)) for r in rows]
+    def cat(role, n, i):
+        return {"source": {"displayName": n, "queryName": "S." + n, "roles": {role: True}}, "values": [x[i] for x in g]}
+    cats = [cat("employee", "Employee ID", 0), cat("manager", "Manager ID", 1), cat("name", "Name", 2), cat("title", "Job title", 3),
+            cat("department", "Team", 4), cat("photo", "Photo", 5)]
+    v = {"source": {"displayName": "Sales", "queryName": "Sum(S.Sales)", "roles": {"value": True}, "isMeasure": True, "format": '#,0 "k€"'}, "values": [x[6] for x in g]}
+    return {"metadata": {"columns": [c["source"] for c in cats] + [v["source"]], "objects": objects or {}}, "categorical": {"categories": cats, "values": [v]}}
+
+
 def check(name, ok, detail=""):
     print(f"  {'OK   ' if ok else 'FALLO'} {name}{'  — ' + detail if detail else ''}")
     if not ok: FALLOS.append(name)
@@ -108,20 +130,22 @@ OPEN_ALL = {"layout": {"autoDepth": False, "initialDepth": 4}}
 
 
 async def ficha(b):
-    """Capturas para la ficha (1.1): build de prueba, datos de Begudes Nord."""
-    async def shot(name, objects, W, H, **kw):
-        o = json.loads(json.dumps(OPEN_ALL)); o.update(objects)
-        pg = await page(b, dv(o), W, H, name=name, **kw)
+    """Capturas para la ficha (1.1): equipo comercial de Begudes Nord con fotos."""
+    async def shot(name, objects, W, H, depth=3, **kw):
+        o = {"layout": {"autoDepth": False, "initialDepth": depth}, "toolbar": {"show": False}}
+        for k, v in objects.items():
+            o[k] = {**o.get(k, {}), **v}
+        pg = await page(b, dv_demo(o), W, H, name=name, **kw)
         await pg.close()
-    await shot("60_central", {"cards": {"count": "total"}, "toolbar": {"show": False}}, 1278, 450)
-    await shot("60_hero", {"cards": {"count": "total"}, "layout": {"autoDepth": False, "initialDepth": 4, "clusters": True}, "toolbar": {"show": False}}, 1180, 600)
-    await shot("60_a11y", {"accessibility": {"highContrast": "on", "minTextSize": 14}, "layout": {"autoDepth": False, "initialDepth": 3}, "toolbar": {"show": False}}, 900, 600)
-    await shot("60_lr", {"layout": {"autoDepth": False, "initialDepth": 4, "orientation": "lr"}, "style": {"template": "signal"}, "toolbar": {"show": False}}, 900, 600)
+    await shot("60_central", {"cards": {"count": "total"}, "layout": {"compact": False}}, 1300, 460, depth=2)
+    await shot("60_hero", {"cards": {"count": "total"}, "layout": {"clusters": True}}, 1250, 1000)
+    await shot("60_a11y", {"accessibility": {"highContrast": "on", "minTextSize": 14}, "state": {"view": '{"m":"depth","o":["JA-02"],"c":[],"f":null,"d":2}'}}, 1100, 760, depth=2)
+    await shot("60_lr", {"layout": {"orientation": "lr"}, "style": {"template": "signal"}, "state": {"view": '{"m":"depth","o":["JA-02"],"c":[],"f":null,"d":2}'}}, 1100, 760, depth=2)
     for k, (w, hh) in {"l": (1000, 560), "m": (620, 380), "s": (380, 240)}.items():
-        pg = await page(b, dv({}), w, hh, name="61_size_" + k)
+        pg = await page(b, dv_demo({}), w, hh, name="61_size_" + k)
         await pg.close()
     for k in ("boardroom", "ledger", "editorial", "signal", "aurora", "terrace"):
-        await shot("62_style_" + k, {"style": {"template": k}, "toolbar": {"show": False}}, 1000, 620)
+        await shot("62_style_" + k, {"style": {"template": k}, "state": {"view": '{"m":"depth","o":["JA-02","JA-03"],"c":[],"f":null,"d":2}'}}, 1150, 760, depth=2)
 
 
 async def main():

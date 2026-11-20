@@ -488,7 +488,9 @@ export class Visual implements IVisual {
         const values = (col?.values || []).filter(v => typeof v === "number") as number[];
         const max = values.length ? Math.max(...values.map(Math.abs)) : 0;
         try {
-            const f = valueFormatter.create({ format: format || "", value: max >= 1000 ? max : 0, cultureSelector: this.host.locale, displayUnitSystemType: 2 } as any);
+            // Unidades automáticas (K, M) solo si la cadena no trae ya texto propio: con '#,0 "k€"' saldría "12.47Kk€".
+            const literal = /["'\\]/.test(format || "");
+            const f = valueFormatter.create({ format: format || "", value: max >= 1000 && !literal ? max : 0, cultureSelector: this.host.locale, displayUnitSystemType: 2 } as any);
             return (v: any) => (v === null || v === undefined ? "" : typeof v === "number" ? f.format(v) : String(v));
         } catch {
             return (v: any) => (v === null || v === undefined ? "" : String(v));
@@ -706,11 +708,17 @@ export class Visual implements IVisual {
         const cw = clamp(s.width, 80, 600), ch = this.cardH();
         const lr = s.orientation === "lr";
         this.collapsed = this.computeCollapsed(this.viewMode === "depth" ? (this.levelDepth ?? this.effectiveDepth(cw, ch, lr)) : 0);
-        this.layout = layoutForest(this.visibleRoots(), {
+        const lo = {
             nodeW: cw, nodeH: ch, gapSibling: clamp(s.gapSibling, 0, 200), gapLevel: clamp(s.gapLevel, 12, 300),
             // Compacto solo de arriba abajo: de izquierda a derecha los equipos ya van en columna.
-            compact: !!s.compact && !lr, orientation: lr ? "lr" : "td", collapsed: this.collapsed,
-        });
+            compact: !!s.compact && !lr, orientation: (lr ? "lr" : "td") as "lr" | "td", collapsed: this.collapsed,
+        };
+        this.layout = layoutForest(this.visibleRoots(), lo);
+        // Vista estrecha: si los jefes plegados en fila no caben con nombres legibles, van en columna como en la 1.0.
+        if (lo.compact && this.layout.width * 0.55 > Math.max(40, this.W - 32)) {
+            const stacked = layoutForest(this.visibleRoots(), { ...lo, stackFolded: true });
+            if (stacked.width < this.layout.width) this.layout = stacked;
+        }
         const L = this.layout;
         this.cardClip(cw, ch, clamp(s.radius, 0, 30));
 

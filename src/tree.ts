@@ -98,6 +98,8 @@ export interface LayoutOptions {
     orientation: "td" | "lr";
     /** Nodos con la rama contraída. */
     collapsed: Set<string>;
+    /** Apilar también a los jefes con el equipo plegado (vista estrecha: en fila no cabrían con nombres legibles). */
+    stackFolded?: boolean;
 }
 
 export interface Placed {
@@ -143,8 +145,11 @@ export function layoutForest(roots: OrgNode[], o: LayoutOptions): Layout {
             s.left = new Array(nodeRows).fill(0); s.right = new Array(nodeRows).fill(W); s.rows = nodeRows;
             return s;
         }
+        // Columna para quien no tiene equipo. Un jefe con su equipo plegado va en fila con los demás (1.1): en columna
+        // parecía uno más de la lista; solo se apilan si son muchos (más de 6), para no ensanchar sin medida.
         const allLeaves = kids.every(k => !visibleKids(k).length);
-        if (o.compact && allLeaves && kids.length > 1) {
+        const realLeaves = kids.every(k => !k.children.length);
+        if (o.compact && allLeaves && kids.length > 1 && (realLeaves || kids.length > 6 || !!o.stackFolded)) {
             // Columna: los subordinados cuelgan a la derecha de una línea vertical bajo el responsable.
             s.stacked = true;
             const indent = Math.round(W * 0.18);

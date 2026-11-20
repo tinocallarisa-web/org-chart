@@ -11,6 +11,8 @@
 - **Dynamic format strings:** when every row of a measure shares one format string, it is used on cards, line labels and tooltips; otherwise the column's format.
 - **Readable card text:** name and text keep at least 4.5:1 contrast on any fill (tint, fx, colour value, department colour); the tint is mixed with the style's card colour; initials turn dark on light circles.
 - **Texts drawn by the visual** (toolbar, warnings, card footer, start page) are translated in Power BI Desktop in the 12 languages; in 1.0 they appeared in English there.
+- **Folded managers in a row.** In the compact layout, managers whose team is folded now sit in a row like their peers instead of in a list under their manager; when the row would not fit with readable names (a narrow slot), they go back to the column.
+- **Units not doubled:** with a format string that already carries its own text (for example `#,0 "k€"`), the visual no longer adds K or M on top ("12.47Kk€" is now "12,469 k€").
 - "Edit interactions" is respected (allowInteractions read from the host capabilities). npm audit: 0 vulnerabilities.
 
 ## 1.0.0.0 — October 2026
