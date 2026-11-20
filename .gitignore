@@ -6,3 +6,8 @@ webpack.statistics.*.html
 SPEC.md
 _releases/
 *.pbix
+
+# Simulador (1.1)
+tools/simulador/capturas/
+tools/simulador/__pycache__/
+dev.lnk
