@@ -338,7 +338,7 @@ export class Visual implements IVisual {
         if (clamp(s.minText, 6, 24) <= 8) return base;
         const name = this.fz(clamp(s.nameSize, 8, 28)), small = this.fz(Math.max(8, Math.round(clamp(s.nameSize, 8, 28) * 0.85)));
         const n = (s.showTitle ? 1 : 0) + (s.showDepartment ? 1 : 0) + (s.count !== "none" || s.showValue ? 1 : 0);
-        return Math.min(300, Math.max(base, Math.ceil(name * 1.25 + n * small * 1.25 + 22)));
+        return Math.min(300, Math.max(base, Math.ceil(name * 1.25 + n * small * 1.25 + 30)));
     }
 
     /** Tamaño de texto con el mínimo de la tarjeta Accesibilidad. */

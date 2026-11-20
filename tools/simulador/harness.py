@@ -108,19 +108,20 @@ OPEN_ALL = {"layout": {"autoDepth": False, "initialDepth": 4}}
 
 
 async def ficha(b):
-    """Capturas para la ficha: tema del informe, estilos, tamaños."""
-    async def shot(name, objects, W, H):
+    """Capturas para la ficha (1.1): build de prueba, datos de Begudes Nord."""
+    async def shot(name, objects, W, H, **kw):
         o = json.loads(json.dumps(OPEN_ALL)); o.update(objects)
-        pg = await page(b, dv(o), W, H, name=name)
+        pg = await page(b, dv(o), W, H, name=name, **kw)
         await pg.close()
-    await shot("60_central", {"cards": {"count": "total"}}, 1200, 520)
-    await shot("60_hero", {"cards": {"count": "total"}, "layout": {"autoDepth": False, "initialDepth": 4, "clusters": True}}, 1300, 640)
-    await shot("60_lr", {"layout": {"autoDepth": False, "initialDepth": 4, "orientation": "lr"}, "cards": {"count": "total"}}, 1000, 760)
+    await shot("60_central", {"cards": {"count": "total"}, "toolbar": {"show": False}}, 1278, 450)
+    await shot("60_hero", {"cards": {"count": "total"}, "layout": {"autoDepth": False, "initialDepth": 4, "clusters": True}, "toolbar": {"show": False}}, 1180, 600)
+    await shot("60_a11y", {"accessibility": {"highContrast": "on", "minTextSize": 14}, "layout": {"autoDepth": False, "initialDepth": 3}, "toolbar": {"show": False}}, 900, 600)
+    await shot("60_lr", {"layout": {"autoDepth": False, "initialDepth": 4, "orientation": "lr"}, "style": {"template": "signal"}, "toolbar": {"show": False}}, 900, 600)
     for k, (w, hh) in {"l": (1000, 560), "m": (620, 380), "s": (380, 240)}.items():
         pg = await page(b, dv({}), w, hh, name="61_size_" + k)
         await pg.close()
     for k in ("boardroom", "ledger", "editorial", "signal", "aurora", "terrace"):
-        await shot("62_style_" + k, {"style": {"template": k}}, 1200, 520)
+        await shot("62_style_" + k, {"style": {"template": k}, "toolbar": {"show": False}}, 1000, 620)
 
 
 async def main():
