@@ -84,6 +84,17 @@ const STYLE_TOKENS: Record<string, StyleTokens> = {
     aurora:    { bg: "#10395E", text: "#FFFFFF", axis: "#C5D3E3", grid: "#3A5C7E", main: "#7CE7D0", grad: "linear-gradient(135deg, #1B1147, #10395E 50%, #0B5A5E)", dept: ["#7CE7D0", "#F6C177", "#EB6F92", "#9CCFD8", "#C4A7E7", "#F2F0E8"] },
     terrace:   { bg: "#FBF5EC", text: "#3A2A1E", axis: "#7A6450", grid: "#E5D6C2", main: "#B5532A", dept: ["#B5532A", "#5E7D4F", "#D9A441", "#3E6E8E", "#8C4F6E", "#7A6450"] },
 };
+/** Contraste WCAG entre dos colores #RRGGBB (1 a 21). Un color que no es hexadecimal cuenta como suficiente. */
+const contrast = (a: string, b: string) => {
+    const L = (h: string) => {
+        const n = parseInt(h.replace("#", "").slice(0, 6), 16);
+        const c = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map(v => { const x = v / 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); });
+        return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+    };
+    if (!/^#[0-9a-f]{6}$/i.test(a || "") || !/^#[0-9a-f]{6}$/i.test(b || "")) return 21;
+    const x = L(a), y = L(b);
+    return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
+};
 const isDark = (hex: string) => {
     const n = parseInt(hex.replace("#", "").slice(0, 6), 16);
     return ((n >> 16) & 255) * 0.299 + ((n >> 8) & 255) * 0.587 + (n & 255) * 0.114 < 128;
@@ -646,7 +657,9 @@ export class Visual implements IVisual {
                 return ramp([s.lowColor, s.highColor], hi > lo ? (v - lo) / (hi - lo) : 1);
             }
         }
-        if (this.groupMode && s.tint && (p.dept || s.colorMode === "level")) return mix(this.deptColor(p), "#FFFFFF", 1 - clamp(s.tintStrength, 0, 100) / 100);
+        // El tinte se mezcla con el color base de la tarjeta (blanco por defecto; oscuro en Boardroom o Aurora).
+        const base = /^#[0-9a-f]{6}$/i.test(s.fill || "") ? s.fill : "#FFFFFF";
+        if (this.groupMode && s.tint && (p.dept || s.colorMode === "level")) return mix(this.deptColor(p), base, 1 - clamp(s.tintStrength, 0, 100) / 100);
         return s.fill || "transparent";
     }
 
@@ -841,6 +854,11 @@ export class Visual implements IVisual {
 
         const dept = this.deptColor(p);
         const fill = this.cardFill(p, hc, pal);
+        // Texto legible sobre cualquier relleno (tinte, fx, color por valor, color de departamento elegido a mano):
+        // si el color del panel o del estilo no contrasta lo bastante, pasa a casi negro o a blanco.
+        const onFill = /^#[0-9a-f]{6}$/i.test(fill) ? fill : (/^#[0-9a-f]{6}$/i.test(s.background || "") ? s.background : "#FFFFFF");
+        const nameInk = contrast(s.nameColor, onFill) >= 4.5 ? s.nameColor : (isDark(onFill) ? "#FFFFFF" : "#1B1B1B");
+        const textInk = contrast(s.textColor, onFill) >= 4.5 ? s.textColor : (isDark(onFill) ? "#FFFFFF" : "#3A3A3A");
         const box = this.el("rect", { class: "box", width: cw, height: ch, rx: clamp(s.radius, 0, 30), fill,
             stroke: hc ? fg : (s.borderWidth > 0 ? s.borderColor : "none"), "stroke-width": hc ? 1.5 : clamp(s.borderWidth, 0, 6) });
         if (p.vacant) box.setAttribute("stroke-dasharray", "4 3");
@@ -892,9 +910,9 @@ export class Visual implements IVisual {
         const smallSize = this.fz(Math.max(8, Math.round(nameSize * 0.85)));
         const right = cw - 8;
         const lines: { text: string; size: number; weight: number; color: string; italic?: boolean }[] = [];
-        lines.push({ text: p.vacant ? this.t("UI_Vacant", "Vacant") : p.name, size: nameSize, weight: 600, color: hc ? fg : s.nameColor, italic: p.vacant });
-        if (s.showTitle && p.title) lines.push({ text: p.title, size: smallSize, weight: 400, color: hc ? fg : s.textColor });
-        if (s.showDepartment && p.dept) lines.push({ text: p.dept, size: smallSize, weight: 400, color: hc ? fg : s.textColor });
+        lines.push({ text: p.vacant ? this.t("UI_Vacant", "Vacant") : p.name, size: nameSize, weight: 600, color: hc ? fg : nameInk, italic: p.vacant });
+        if (s.showTitle && p.title) lines.push({ text: p.title, size: smallSize, weight: 400, color: hc ? fg : textInk });
+        if (s.showDepartment && p.dept) lines.push({ text: p.dept, size: smallSize, weight: 400, color: hc ? fg : textInk });
         // Pie: recuento y valor
         const foot: string[] = [];
         if (p.node.children.length && s.count !== "none") {
@@ -906,7 +924,7 @@ export class Visual implements IVisual {
         // salía su valor propio y un jefe que no vende aparecía vacío o con 0.
         const shown = p.node.children.length ? this.teamValue(p.node) : p.value;
         if (s.showValue && shown !== null) foot.push(this.fmtValue(shown));
-        if (foot.length) lines.push({ text: foot.join(" · "), size: smallSize, weight: 400, color: hc ? fg : s.textColor });
+        if (foot.length) lines.push({ text: foot.join(" · "), size: smallSize, weight: 400, color: hc ? fg : textInk });
         const totalH = lines.reduce((a, l) => a + l.size * 1.25, 0);
         const fitLines = totalH > ch - 8 ? lines.slice(0, Math.max(1, Math.floor((ch - 8) / (nameSize * 1.25)))) : lines;
         let y = (ch - fitLines.reduce((a, l) => a + l.size * 1.25, 0)) / 2;

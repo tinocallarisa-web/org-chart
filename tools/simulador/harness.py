@@ -190,6 +190,23 @@ async def main():
         check("plantilla 1.0 'corporate' sigue funcionando (banda a la izquierda, 6 px)", w == "6", str(w))
         await pg.close()
 
+        print("Contraste del texto en cualquier combinación")
+        CONTRASTE = """() => { const L = h => { const n = parseInt(h.replace('#','').slice(0,6),16); return [(n>>16)&255,(n>>8)&255,n&255].map(v => { const x=v/255; return x<=0.03928?x/12.92:Math.pow((x+0.055)/1.055,2.4); }).reduce((a,c,i)=>a+c*[0.2126,0.7152,0.0722][i],0); };
+            const cr = (a,b) => { const x=L(a), y=L(b); return (Math.max(x,y)+0.05)/(Math.min(x,y)+0.05); };
+            let min = 99, peor = '';
+            document.querySelectorAll('g.card').forEach(g => { const f = g.querySelector('rect.box').getAttribute('fill');
+              if (!/^#[0-9a-f]{6}$/i.test(f)) return;
+              Array.from(g.querySelectorAll('text')).slice(1).forEach(t => { const c = t.getAttribute('fill'); if (!t.textContent || !/^#[0-9a-f]{6}$/i.test(c) || t.closest('g.tog')) return;
+                const r = cr(c, f); if (r < min) { min = r; peor = t.textContent + ' ' + c + ' sobre ' + f; } }); });
+            return { min, peor }; }"""
+        for k in ("clean", "boardroom", "aurora", "ledger", "signal"):
+            for pal in ("neon", "okabe"):
+                o = json.loads(json.dumps(OPEN_ALL)); o["style"] = {"template": k}; o["colors"] = {"tint": True, "tintStrength": 31, "palette": pal}
+                pg = await page(b, dv(o), name=f"10_tinte_{k}_{pal}" if pal == "neon" else None)
+                r = await pg.evaluate(CONTRASTE)
+                check(f"{k} + tinte {pal}: todo el texto con contraste >= 4,5", r["min"] >= 4.5, f"{r['min']:.2f} {r['peor']}")
+                await pg.close()
+
         print("Jefes que faltan")
         sin_jefes = [x for x in GENTE if x[0] not in ("E05", "E06")]
         pg = await page(b, dv(OPEN_ALL, gente=sin_jefes), name="07_jefes_que_faltan")
