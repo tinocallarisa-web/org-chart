@@ -146,5 +146,22 @@
   "UI_WarnRowsDesktop": "Power BI Desktop sends a visual only the first rows: publish to the Service to see everyone.",
   "UI_WarnTitle": "Org Chart",
   "UI_ZoomIn": "Zoom in",
-  "UI_ZoomOut": "Zoom out"
+  "UI_ZoomOut": "Zoom out",
+  "Enum_tpl_theme": "Report theme",
+  "Enum_tpl_boardroom": "Boardroom",
+  "Enum_tpl_ledger": "Ledger",
+  "Enum_tpl_editorial": "Editorial",
+  "Enum_tpl_signal": "Signal",
+  "Enum_tpl_aurora": "Aurora",
+  "Enum_tpl_terrace": "Terrace",
+  "Enum_pal_theme": "Report theme",
+  "Enum_pal_style": "Style colors",
+  "Obj_accessibility": "Accessibility",
+  "Prop_accessibility_highContrast": "High contrast",
+  "Enum_hc_auto": "Automatic (Windows setting)",
+  "Enum_hc_on": "On",
+  "Prop_accessibility_focusColor": "Focus color",
+  "Prop_accessibility_focusWidth": "Focus width",
+  "Prop_accessibility_minTextSize": "Minimum text size",
+  "UI_WarnMissingHint": "If those managers are in your table, their rows were left out because Value is blank for them: add a measure that is never blank (for example a count of rows) to Tooltips."
 }

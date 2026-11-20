@@ -4,7 +4,7 @@
     "displayName": "Org Chart by TCViz",
     "guid": "orgChartTCVizB36215279C0F4E9B93D25094C04F6842",
     "visualClassName": "Visual",
-    "version": "1.0.0.0",
+    "version": "1.1.0.0",
     "description": "Free org chart: employee and manager IDs, photos, departments, breadcrumb navigation.",
     "supportUrl": "https://tinocallarisa-web.github.io/org-chart/support.html",
     "privacyTermsLink": "https://tinocallarisa-web.github.io/org-chart/privacy.html",

@@ -146,5 +146,22 @@
   "UI_WarnRowsDesktop": "Power BI Desktop wysyła wizualizacji tylko pierwsze wiersze: opublikuj w usłudze, aby zobaczyć wszystkich.",
   "UI_WarnTitle": "Org Chart",
   "UI_ZoomIn": "Powiększ",
-  "UI_ZoomOut": "Pomniejsz"
+  "UI_ZoomOut": "Pomniejsz",
+  "Enum_tpl_theme": "Motyw raportu",
+  "Enum_tpl_boardroom": "Boardroom",
+  "Enum_tpl_ledger": "Ledger",
+  "Enum_tpl_editorial": "Editorial",
+  "Enum_tpl_signal": "Signal",
+  "Enum_tpl_aurora": "Aurora",
+  "Enum_tpl_terrace": "Terrace",
+  "Enum_pal_theme": "Motyw raportu",
+  "Enum_pal_style": "Kolory stylu",
+  "Obj_accessibility": "Ułatwienia dostępu",
+  "Prop_accessibility_highContrast": "Wysoki kontrast",
+  "Enum_hc_auto": "Automatycznie (ustawienie systemu Windows)",
+  "Enum_hc_on": "Włączony",
+  "Prop_accessibility_focusColor": "Kolor fokusu",
+  "Prop_accessibility_focusWidth": "Grubość fokusu",
+  "Prop_accessibility_minTextSize": "Minimalny rozmiar tekstu",
+  "UI_WarnMissingHint": "Jeśli ci kierownicy są w tabeli, ich wiersze pominięto, bo Value jest dla nich puste: dodaj do Tooltips miarę, która nigdy nie jest pusta (np. liczbę wierszy)."
 }

@@ -146,5 +146,22 @@
   "UI_WarnRowsDesktop": "Power BI Desktop invia al visual solo le prime righe: pubblica nel servizio per vedere tutti.",
   "UI_WarnTitle": "Org Chart",
   "UI_ZoomIn": "Ingrandisci",
-  "UI_ZoomOut": "Riduci"
+  "UI_ZoomOut": "Riduci",
+  "Enum_tpl_theme": "Tema del report",
+  "Enum_tpl_boardroom": "Boardroom",
+  "Enum_tpl_ledger": "Ledger",
+  "Enum_tpl_editorial": "Editorial",
+  "Enum_tpl_signal": "Signal",
+  "Enum_tpl_aurora": "Aurora",
+  "Enum_tpl_terrace": "Terrace",
+  "Enum_pal_theme": "Tema del report",
+  "Enum_pal_style": "Colori dello stile",
+  "Obj_accessibility": "Accessibilità",
+  "Prop_accessibility_highContrast": "Contrasto elevato",
+  "Enum_hc_auto": "Automatico (impostazione di Windows)",
+  "Enum_hc_on": "Attivato",
+  "Prop_accessibility_focusColor": "Colore dello stato attivo",
+  "Prop_accessibility_focusWidth": "Spessore dello stato attivo",
+  "Prop_accessibility_minTextSize": "Dimensione minima del testo",
+  "UI_WarnMissingHint": "Se questi responsabili sono nella tabella, le loro righe sono state escluse perché Value è vuoto: aggiungi in Tooltips una misura mai vuota (ad esempio un conteggio di righe)."
 }

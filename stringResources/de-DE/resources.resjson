@@ -146,5 +146,22 @@
   "UI_WarnRowsDesktop": "Power BI Desktop sendet einem Visual nur die ersten Zeilen: Im Dienst veröffentlichen, um alle zu sehen.",
   "UI_WarnTitle": "Org Chart",
   "UI_ZoomIn": "Vergrößern",
-  "UI_ZoomOut": "Verkleinern"
+  "UI_ZoomOut": "Verkleinern",
+  "Enum_tpl_theme": "Berichtsdesign",
+  "Enum_tpl_boardroom": "Boardroom",
+  "Enum_tpl_ledger": "Ledger",
+  "Enum_tpl_editorial": "Editorial",
+  "Enum_tpl_signal": "Signal",
+  "Enum_tpl_aurora": "Aurora",
+  "Enum_tpl_terrace": "Terrace",
+  "Enum_pal_theme": "Berichtsdesign",
+  "Enum_pal_style": "Farben des Stils",
+  "Obj_accessibility": "Barrierefreiheit",
+  "Prop_accessibility_highContrast": "Hoher Kontrast",
+  "Enum_hc_auto": "Automatisch (Windows-Einstellung)",
+  "Enum_hc_on": "Ein",
+  "Prop_accessibility_focusColor": "Fokusfarbe",
+  "Prop_accessibility_focusWidth": "Fokusbreite",
+  "Prop_accessibility_minTextSize": "Mindestschriftgröße",
+  "UI_WarnMissingHint": "Wenn diese Vorgesetzten in Ihrer Tabelle stehen, fehlen ihre Zeilen, weil Value für sie leer ist: Fügen Sie unter Tooltips ein Measure hinzu, das nie leer ist (zum Beispiel eine Zeilenanzahl)."
 }

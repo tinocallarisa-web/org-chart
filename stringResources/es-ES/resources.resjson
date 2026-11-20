@@ -146,5 +146,22 @@
   "UI_WarnRowsDesktop": "Power BI Desktop solo envía a un visual las primeras filas: publica en el Servicio para ver a todos.",
   "UI_WarnTitle": "Org Chart",
   "UI_ZoomIn": "Acercar",
-  "UI_ZoomOut": "Alejar"
+  "UI_ZoomOut": "Alejar",
+  "Enum_tpl_theme": "Tema del informe",
+  "Enum_tpl_boardroom": "Boardroom",
+  "Enum_tpl_ledger": "Ledger",
+  "Enum_tpl_editorial": "Editorial",
+  "Enum_tpl_signal": "Signal",
+  "Enum_tpl_aurora": "Aurora",
+  "Enum_tpl_terrace": "Terrace",
+  "Enum_pal_theme": "Tema del informe",
+  "Enum_pal_style": "Colores del estilo",
+  "Obj_accessibility": "Accesibilidad",
+  "Prop_accessibility_highContrast": "Contraste alto",
+  "Enum_hc_auto": "Automático (configuración de Windows)",
+  "Enum_hc_on": "Activado",
+  "Prop_accessibility_focusColor": "Color del foco",
+  "Prop_accessibility_focusWidth": "Grosor del foco",
+  "Prop_accessibility_minTextSize": "Tamaño mínimo de texto",
+  "UI_WarnMissingHint": "Si esos responsables están en tu tabla, sus filas se han quedado fuera porque Value está en blanco para ellos: añade en Tooltips una medida que nunca esté en blanco (por ejemplo, un recuento de filas)."
 }

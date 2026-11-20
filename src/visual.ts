@@ -9,6 +9,7 @@ import {
 } from "powerbi-visuals-utils-onobjectutils";
 import { buildForest, layoutForest, pathTo, Forest, OrgNode, Layout, Placed } from "./tree";
 import { PALETTES, paletteById, ramp, mix } from "./palettes";
+import { STRINGS } from "./strings";
 
 import VisualConstructorOptions = powerbi.extensibility.visual.VisualConstructorOptions;
 import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions;
@@ -34,6 +35,10 @@ interface Settings {
     toolbar: boolean; search: boolean; minimap: boolean; breadcrumb: boolean;
     /** Tarjeta teñida con el color del departamento. */
     tint: boolean;
+    /** Accesibilidad (1.1): alto contraste automático u obligado, foco del teclado y tamaño mínimo de texto. */
+    hcMode: string; focusColor: string; focusWidth: number; minText: number;
+    /** Degradado de fondo del estilo (Aurora), solo si el autor no ha elegido fondo. */
+    bgGrad: string;
 }
 
 const DEFAULTS: Settings = {
@@ -47,17 +52,55 @@ const DEFAULTS: Settings = {
     colorMode: "department", palette: "tcviz", lowColor: "#D6E4F2", highColor: "#1F4E80", background: "",
     toolbar: true, search: true, minimap: true, breadcrumb: true,
     tint: false,
+    hcMode: "auto", focusColor: "#1F4E80", focusWidth: 2.5, minText: 6,
+    bgGrad: "",
 };
 
-/** Plantillas: solo rellenan lo que el usuario no ha tocado. */
+/**
+ * Plantillas: solo rellenan lo que el usuario no ha tocado. "clean" se presenta como "Report theme" (1.1): toma la
+ * tinta y los colores del tema del informe (se rellena en cada update con themeTemplate). none, corporate, colorful,
+ * minimal y compact salen del desplegable en la 1.1 pero siguen funcionando en los informes que las guardaron.
+ */
 const TEMPLATES: Record<string, Partial<Settings>> = {
     none: {},
-    clean: {},
+    clean: { palette: "theme" },
     corporate: { accent: "left", radius: 3, shadow: true, borderWidth: 0, photoShape: "square", fontFamily: "'Segoe UI Semibold', 'Segoe UI', sans-serif", linkShape: "elbow" },
     colorful: { tint: true, tintStrength: 30, accent: "none", borderWidth: 0, radius: 12, palette: "vivid", linkByDept: true },
     minimal: { fill: "", borderWidth: 0, accent: "none", linkShape: "curved", showValue: false, count: "none" },
     compact: { width: 160, height: 40, showPhoto: false, showTitle: false, nameSize: 11, gapLevel: 28, gapSibling: 10, radius: 4 },
 };
+
+/**
+ * Estilos de la colección TCViz (1.1), con los mismos tokens que Dynamic Matrix, Treemap, Radar o Bullet: fondo,
+ * tinta, ejes, rejilla y color principal. En el organigrama: fondo del visual, tarjeta, nombre, texto, borde, líneas
+ * y selección; los departamentos con una paleta propia de cada estilo. Gratis, como todo Org Chart.
+ */
+interface StyleTokens { bg: string; text: string; axis: string; grid: string; main: string; font?: string; grad?: string; dept: string[]; }
+const STYLE_TOKENS: Record<string, StyleTokens> = {
+    boardroom: { bg: "#16263D", text: "#F2F0E8", axis: "#9FB0C6", grid: "#2A3E5C", main: "#C9A45C", dept: ["#C9A45C", "#7FA7D9", "#E07A5F", "#81B29A", "#F2CC8F", "#B8A1D9"] },
+    ledger:    { bg: "#FBF8EF", text: "#231F16", axis: "#6E6652", grid: "#D9D2BE", main: "#7A1F1F", font: "Georgia, serif", dept: ["#7A1F1F", "#2F4858", "#8A6E2F", "#3F6B4E", "#5B4A7A", "#A0522D"] },
+    editorial: { bg: "#FFFFFF", text: "#111111", axis: "#5F5F5F", grid: "#E2E2E2", main: "#D7263D", font: "Georgia, serif", dept: ["#D7263D", "#1B998B", "#2E294E", "#F46036", "#5C5C5C", "#8A9A3B"] },
+    signal:    { bg: "#FFFFFF", text: "#14202B", axis: "#566472", grid: "#D9DEE4", main: "#1F7A4D", dept: ["#1F7A4D", "#2B6CB0", "#D9A441", "#8E5FC4", "#C96442", "#4A9BC9"] },
+    aurora:    { bg: "#10395E", text: "#FFFFFF", axis: "#C5D3E3", grid: "#3A5C7E", main: "#7CE7D0", grad: "linear-gradient(135deg, #1B1147, #10395E 50%, #0B5A5E)", dept: ["#7CE7D0", "#F6C177", "#EB6F92", "#9CCFD8", "#C4A7E7", "#F2F0E8"] },
+    terrace:   { bg: "#FBF5EC", text: "#3A2A1E", axis: "#7A6450", grid: "#E5D6C2", main: "#B5532A", dept: ["#B5532A", "#5E7D4F", "#D9A441", "#3E6E8E", "#8C4F6E", "#7A6450"] },
+};
+const isDark = (hex: string) => {
+    const n = parseInt(hex.replace("#", "").slice(0, 6), 16);
+    return ((n >> 16) & 255) * 0.299 + ((n >> 8) & 255) * 0.587 + (n & 255) * 0.114 < 128;
+};
+for (const k of Object.keys(STYLE_TOKENS)) {
+    const t = STYLE_TOKENS[k];
+    TEMPLATES[k] = {
+        background: t.bg, fill: mix(t.bg, t.text, isDark(t.bg) ? 0.08 : 0.02), nameColor: t.text, textColor: t.axis,
+        borderColor: t.grid, borderWidth: 1, linkColor: mix(t.axis, t.bg, 0.25), selColor: t.main, palette: "style_" + k,
+        lowColor: mix(t.bg, t.main, 0.15), highColor: t.main,
+        ...(t.font ? { fontFamily: t.font } : {}),
+    };
+}
+/** Valores del desplegable de estilo en la 1.1 ("clean" es el tema del informe). */
+const STYLE_ITEMS: [string, string, string][] = [["clean", "Enum_tpl_theme", "Report theme"], ["boardroom", "Enum_tpl_boardroom", "Boardroom"],
+    ["ledger", "Enum_tpl_ledger", "Ledger"], ["editorial", "Enum_tpl_editorial", "Editorial"], ["signal", "Enum_tpl_signal", "Signal"],
+    ["aurora", "Enum_tpl_aurora", "Aurora"], ["terrace", "Enum_tpl_terrace", "Terrace"]];
 
 type Objects = powerbi.DataViewObjects | undefined;
 
@@ -91,6 +134,9 @@ function readSettings(objects: Objects): Settings {
         toolbar: pick("toolbar", "show", "toolbar"), search: pick("toolbar", "search", "search"), minimap: pick("toolbar", "minimap", "minimap"),
         breadcrumb: pick("toolbar", "breadcrumb", "breadcrumb"),
         tint: pick("colors", "tint", "tint"),
+        hcMode: pick("accessibility", "highContrast", "hcMode"), focusColor: pick("accessibility", "focusColor", "focusColor"),
+        focusWidth: pick("accessibility", "focusWidth", "focusWidth"), minText: pick("accessibility", "minTextSize", "minText"),
+        bgGrad: objects?.["colors"]?.["background"] ? "" : (STYLE_TOKENS[tplName]?.grad ?? ""),
     };
 }
 
@@ -241,11 +287,77 @@ export class Visual implements IVisual {
     }
 
     private get canInteract(): boolean {
-        return (this.host as any).allowInteractions !== false;
+        // Se lee de hostCapabilities: en el host no existe y la comprobación anterior nunca bloqueaba nada.
+        return (this.host as any).hostCapabilities?.allowInteractions !== false;
     }
 
     private t(key: string, fallback: string): string {
+        // Primero la tabla del bundle (src/strings.ts): Desktop solo traduce con getDisplayName las claves declaradas
+        // en capabilities.json, y los textos que escribe el visual (barra, avisos, inicio) no lo están.
+        const own = this.stringsFor()?.[key];
+        if (own) return own;
         try { const v = this.loc.getDisplayName(key); return v && v !== key ? v : fallback; } catch { return fallback; }
+    }
+
+    private stringsFor(): Record<string, string> | undefined {
+        const loc = String((this.host as any)?.locale || "");
+        if (!loc || /^en/i.test(loc)) return undefined;
+        if (STRINGS[loc]) return STRINGS[loc];
+        const lang = loc.split("-")[0].toLowerCase();
+        const k = Object.keys(STRINGS).sort().find(x => x.toLowerCase().startsWith(lang + "-"));
+        return k ? STRINGS[k] : undefined;
+    }
+
+    /** Paleta del host con el alto contraste obligado de la tarjeta Accesibilidad: "On" es negro sobre blanco. */
+    private pal(): any {
+        const p: any = this.host.colorPalette;
+        if (p?.isHighContrast || this.settings.hcMode !== "on") return p;
+        return Object.assign(Object.create(p), { isHighContrast: true, foreground: { value: "#000000" }, background: { value: "#FFFFFF" }, foregroundSelected: { value: "#000000" } });
+    }
+
+    /**
+     * Alto de la tarjeta: el del panel, o más si el tamaño mínimo de texto (Accesibilidad) no deja caber sus líneas
+     * sin chocar con el botón de abrir y cerrar del borde inferior.
+     */
+    private cardH(): number {
+        const s = this.settings;
+        const base = clamp(s.height, 28, 300);
+        if (clamp(s.minText, 6, 24) <= 8) return base;
+        const name = this.fz(clamp(s.nameSize, 8, 28)), small = this.fz(Math.max(8, Math.round(clamp(s.nameSize, 8, 28) * 0.85)));
+        const n = (s.showTitle ? 1 : 0) + (s.showDepartment ? 1 : 0) + (s.count !== "none" || s.showValue ? 1 : 0);
+        return Math.min(300, Math.max(base, Math.ceil(name * 1.25 + n * small * 1.25 + 22)));
+    }
+
+    /** Tamaño de texto con el mínimo de la tarjeta Accesibilidad. */
+    private fz(px: number): number {
+        return Math.max(clamp(this.settings.minText, 6, 24), px);
+    }
+
+    /** Tema del informe (1.1): tinta del nombre y del texto; los departamentos toman los colores del tema. */
+    private themeTemplate(): void {
+        const p: any = this.host.colorPalette;
+        TEMPLATES.clean = { palette: "theme", nameColor: p?.foreground?.value || "#252423", textColor: p?.foregroundNeutralSecondary?.value || "#605E5C" };
+    }
+
+    /** Cadena de formato de una medida: la dinámica común a todas sus filas, si la hay (1.1); si no, la de la columna. */
+    private colFormat(col: powerbi.DataViewValueColumn | undefined): string | undefined {
+        const objs = (col as any)?.objects as any[] | undefined;
+        if (objs?.length) {
+            const set = new Set<string>();
+            for (const o of objs) { const f = o?.general?.formatString; if (typeof f === "string" && f) set.add(f); }
+            if (set.size === 1) return Array.from(set)[0];
+        }
+        return col?.source?.format;
+    }
+
+    /** Colores de grupo: los del estilo, los del tema del informe o los de la paleta elegida. */
+    private groupColors(keys: string[]): string[] {
+        const id = this.settings.palette;
+        if (id.indexOf("style_") === 0 && STYLE_TOKENS[id.slice(6)]) { const c = STYLE_TOKENS[id.slice(6)].dept; return keys.map((_, i) => c[i % c.length]); }
+        if (id === "theme") { const p: any = this.host.colorPalette; return keys.map(k => p?.getColor?.(k)?.value || "#118DFF"); }
+        const pal = paletteById(id);
+        const colors = pal.colors.length ? pal.colors : paletteById("tcviz").colors;
+        return keys.map((_, i) => colors[i % colors.length]);
     }
 
     private injectStyles(): void {
@@ -259,14 +371,14 @@ export class Visual implements IVisual {
             ".tcoc-vp.drag{cursor:grabbing}",
             ".tcoc-vp svg{display:block;width:100%;height:100%}",
             ".tcoc g.card{cursor:pointer;outline:none}",
-            ".tcoc g.card:focus-visible rect.box{stroke:#1F4E80!important;stroke-width:2.5px!important}",
+            ".tcoc g.card:focus-visible rect.box{stroke:var(--tcoc-focus,#1F4E80)!important;stroke-width:var(--tcoc-focus-w,2.5px)!important}",
             ".tcoc g.card .fbtn{opacity:0;transition:opacity .15s}",
             ".tcoc g.card:hover .fbtn,.tcoc g.card:focus .fbtn{opacity:1}",
             ".tcoc g.tog{cursor:pointer}",
             ".tcoc-tools{position:absolute;top:6px;right:6px;display:flex;gap:4px;align-items:center;background:rgba(255,255,255,.92);border:1px solid #DAD9D4;border-radius:6px;padding:3px}",
             ".tcoc-tools button{border:none;background:transparent;width:24px;height:24px;border-radius:4px;cursor:pointer;color:#535146;display:flex;align-items:center;justify-content:center;padding:0}",
             ".tcoc-tools button:hover{background:#EDE9DE}",
-            ".tcoc-tools button:focus-visible,.tcoc-crumb button:focus-visible,.tcwl-link:focus-visible{outline:2px solid #1F4E80;outline-offset:1px}",
+            ".tcoc-tools button:focus-visible,.tcoc-crumb button:focus-visible,.tcwl-link:focus-visible,.tcoc-tools input:focus-visible{outline:var(--tcoc-focus-w,2px) solid var(--tcoc-focus,#1F4E80);outline-offset:1px}",
             ".tcoc-tools input{border:1px solid #DAD9D4;border-radius:4px;height:22px;width:120px;font:12px 'Segoe UI',sans-serif;padding:0 6px;color:#3D3929}",
             ".tcoc-crumb{position:absolute;top:6px;left:6px;display:flex;flex-wrap:wrap;gap:2px;align-items:center;max-width:60%;font-size:12px;color:#83827D}",
             ".tcoc-crumb button{border:none;background:rgba(255,255,255,.92);border-radius:4px;padding:2px 6px;font:12px 'Segoe UI',sans-serif;color:#2B6CB0;cursor:pointer}",
@@ -289,7 +401,12 @@ export class Visual implements IVisual {
         this.lastOptions = options;
         try {
             const dv = options.dataViews?.[0];
+            this.themeTemplate();
             this.settings = readSettings(dv?.metadata?.objects);
+            const pl = this.pal();
+            this.root.style.setProperty("--tcoc-focus", pl?.isHighContrast ? (pl.foregroundSelected?.value ?? pl.foreground?.value ?? "#000") : (this.settings.focusColor || "#1F4E80"));
+            this.root.style.setProperty("--tcoc-focus-w", clamp(this.settings.focusWidth, 1, 6) + "px");
+            this.root.style.fontSize = this.fz(12) + "px";
             this.formatMode = !!(options as any).formatMode;
             this.subSelectionHelper.setFormatMode(this.formatMode);
             if (dv && this.streamSegments(options, dv)) {
@@ -340,7 +457,8 @@ export class Visual implements IVisual {
         const list = (a: string[]) => a.slice(0, 5).join(", ") + (a.length > 5 ? "…" : "");
         if (f?.cycles.length) msgs.push(this.t("UI_WarnCycles", "Reporting loops broken at:") + " " + list(f.cycles) + ".");
         if (f?.duplicates.length) msgs.push(this.t("UI_WarnDuplicates", "Repeated Employee IDs (the first row is used):") + " " + list(f.duplicates) + ".");
-        if (f?.missingManagers.length) msgs.push(this.t("UI_WarnMissing", "Manager IDs that are not employees (their people are shown at the top):") + " " + list(f.missingManagers) + ".");
+        if (f?.missingManagers.length) msgs.push(this.t("UI_WarnMissing", "Manager IDs that are not employees (their people are shown at the top):") + " " + list(f.missingManagers) + ". "
+            + this.t("UI_WarnMissingHint", "If those managers are in your table, their rows were left out because Value is blank for them: add a measure that is never blank (for example a count of rows) to Tooltips."));
         if (this.truncatedAt) msgs.push((this.isDesktop
             ? this.t("UI_WarnRowsDesktop", "Power BI Desktop sends a visual only the first rows: publish to the Service to see everyone.")
             : this.t("UI_WarnRows", "Power BI sent only part of the rows: the chart shows the rows received.")) + " (" + this.truncatedAt + ")");
@@ -376,7 +494,7 @@ export class Visual implements IVisual {
         const colorCol = vals.find?.(v => v.source.roles?.["colorBy"]);
         const tipCols = (vals.filter?.(v => v.source.roles?.["tooltips"]) || []) as powerbi.DataViewValueColumn[];
         this.hasHighlights = !!valueCol?.highlights;
-        this.fmtValue = this.formatter(valueCol?.source?.format, valueCol);
+        this.fmtValue = this.formatter(this.colFormat(valueCol), valueCol);
         this.valueName = valueCol?.source?.displayName ?? "";
         const num = (x: any) => (typeof x === "number" && Number.isFinite(x) ? x : null);
         const str = (x: any) => (x === null || x === undefined ? "" : String(x).trim());
@@ -384,7 +502,7 @@ export class Visual implements IVisual {
         const rows = emp.values.map((v, i) => ({ id: str(v), parentId: str(mgr.values[i]) || null, row: i }));
         this.forest = buildForest(rows);
         this.people.clear();
-        const tipFmt = tipCols.map(c => this.formatter(c.source.format, c));
+        const tipFmt = tipCols.map(c => this.formatter(this.colFormat(c), c));
         for (const n of this.forest.nodes.values()) {
             const i = n.row;
             const name = str(nameC?.values[i]);
@@ -407,11 +525,10 @@ export class Visual implements IVisual {
             });
         }
         // Colores por departamento, en orden de aparición
-        const pal = paletteById(this.settings.palette);
-        const colors = pal.colors.length ? pal.colors : paletteById("tcviz").colors;
         const depts: string[] = [];
         for (const p of this.people.values()) if (p.dept && depts.indexOf(p.dept) < 0) depts.push(p.dept);
-        this.deptColors = new Map(depts.map((d, i) => [d, colors[i % colors.length]]));
+        const dc = this.groupColors(depts);
+        this.deptColors = new Map(depts.map((d, i) => [d, dc[i]]));
 
         // Estado guardado: al abrir el informe o al aplicar un marcador llega distinto del último escrito.
         const raw = dv.metadata?.objects?.["state"]?.["view"] as string | undefined;
@@ -427,9 +544,8 @@ export class Visual implements IVisual {
     /** Color de grupo de la tarjeta: su departamento o su nivel, según Color by. */
     private deptColor(p: Person): string {
         if (this.settings.colorMode === "level") {
-            const pal = paletteById(this.settings.palette);
-            const colors = pal.colors.length ? pal.colors : paletteById("tcviz").colors;
-            return colors[p.node.depth % colors.length];
+            const lv = this.groupColors(Array.from({ length: p.node.depth + 1 }, (_, i) => "level " + (i + 1)));
+            return lv[p.node.depth];
         }
         return this.deptColors.get(p.dept) || "#2B6CB0";
     }
@@ -556,13 +672,14 @@ export class Visual implements IVisual {
 
     private render(): void {
         const s = this.settings;
-        const pal: any = this.host.colorPalette;
+        const pal: any = this.pal();
         const hc = !!pal.isHighContrast;
         const fg = pal.foreground?.value ?? "#000";
-        this.root.style.background = hc ? (pal.background?.value ?? "#fff") : (s.background || "transparent");
+        this.root.style.background = hc ? (pal.background?.value ?? "#fff") : (s.bgGrad || s.background || "transparent");
+        const bgSolid = /^#[0-9a-f]{6}$/i.test(s.background || "") ? s.background : "#FFFFFF";
         while (this.content.firstChild) this.content.removeChild(this.content.firstChild);
 
-        const cw = clamp(s.width, 80, 600), ch = clamp(s.height, 28, 300);
+        const cw = clamp(s.width, 80, 600), ch = this.cardH();
         const lr = s.orientation === "lr";
         this.collapsed = this.computeCollapsed(this.viewMode === "depth" ? (this.levelDepth ?? this.effectiveDepth(cw, ch, lr)) : 0);
         this.layout = layoutForest(this.visibleRoots(), {
@@ -592,9 +709,9 @@ export class Visual implements IVisual {
                 }
                 const pad = 10, col = this.deptColors.get(p.dept) || "#2B6CB0";
                 const r = this.el("rect", { x: x0 - pad, y: y0 - pad - 14, width: x1 - x0 + pad * 2, height: y1 - y0 + pad * 2 + 14, rx: 10,
-                    fill: mix(col, "#FFFFFF", 0.92), stroke: mix(col, "#FFFFFF", 0.6), "stroke-width": 1 });
+                    fill: mix(col, bgSolid, 0.88), stroke: mix(col, bgSolid, 0.55), "stroke-width": 1 });
                 this.content.appendChild(r);
-                const tl = this.el("text", { x: x0 - pad + 8, y: y0 - pad - 2, "font-size": 10, "font-weight": 600, fill: col, "font-family": s.fontFamily });
+                const tl = this.el("text", { x: x0 - pad + 8, y: y0 - pad - 2, "font-size": this.fz(10), "font-weight": 600, fill: col, "font-family": s.fontFamily });
                 tl.textContent = p.dept;
                 this.content.appendChild(tl);
             }
@@ -615,8 +732,8 @@ export class Visual implements IVisual {
                 const txt = s.linkLabel === "team" ? String(1 + e.to.node.total) : this.fmtValue(this.teamValue(e.to.node));
                 if (txt) {
                     const [mx, my] = lr ? [e.to.x - clamp(s.gapLevel, 12, 300) / 2, e.to.y + ch / 2] : [e.to.x + cw / 2, e.to.y - clamp(s.gapLevel, 12, 300) / 2 + 4];
-                    const lab = this.el("text", { x: mx, y: my, "text-anchor": "middle", "font-size": 10, fill: hc ? fg : s.textColor, "font-family": s.fontFamily,
-                        "paint-order": "stroke", stroke: hc ? (pal.background?.value ?? "#fff") : "#FFFFFF", "stroke-width": 3 });
+                    const lab = this.el("text", { x: mx, y: my, "text-anchor": "middle", "font-size": this.fz(10), fill: hc ? fg : s.textColor, "font-family": s.fontFamily,
+                        "paint-order": "stroke", stroke: hc ? (pal.background?.value ?? "#fff") : bgSolid, "stroke-width": 3 });
                     lab.textContent = txt;
                     linkG.appendChild(lab);
                 }
@@ -747,10 +864,12 @@ export class Visual implements IVisual {
                 const shapeEl = s.photoShape === "circle"
                     ? this.el("circle", { cx: px + sz / 2, cy: py + sz / 2, r: sz / 2 })
                     : this.el("rect", { x: px, y: py, width: sz, height: sz, rx: s.photoShape === "rounded" ? sz * 0.22 : 0 });
-                shapeEl.setAttribute("fill", hc ? fg : (p.vacant ? "#DAD9D4" : (this.groupMode && (p.dept || s.colorMode === "level") ? dept : "#2B6CB0")));
+                const disc = p.vacant ? "#DAD9D4" : (this.groupMode && (p.dept || s.colorMode === "level") ? dept : "#2B6CB0");
+                shapeEl.setAttribute("fill", hc ? fg : disc);
                 g.appendChild(shapeEl);
+                // Iniciales legibles sobre cualquier color: blancas sobre oscuro, casi negras sobre claro (dorado, turquesa, amarillo del tema).
                 const it = this.el("text", { x: px + sz / 2, y: py + sz / 2 + sz * 0.13, "text-anchor": "middle", "font-size": Math.round(sz * 0.38), "font-weight": 600,
-                    fill: hc ? (pal.background?.value ?? "#fff") : "#FFFFFF", "font-family": s.fontFamily });
+                    fill: hc ? (pal.background?.value ?? "#fff") : (isDark(disc) ? "#FFFFFF" : "#1B1B1B"), "font-family": s.fontFamily });
                 it.textContent = p.vacant ? "?" : this.initials(p.name || p.node.id);
                 g.appendChild(it);
             }
@@ -758,8 +877,8 @@ export class Visual implements IVisual {
         } else if (s.accent === "left") tx = 12;
 
         // Textos
-        const nameSize = clamp(s.nameSize, 8, 28);
-        const smallSize = Math.max(8, Math.round(nameSize * 0.85));
+        const nameSize = this.fz(clamp(s.nameSize, 8, 28));
+        const smallSize = this.fz(Math.max(8, Math.round(nameSize * 0.85)));
         const right = cw - 8;
         const lines: { text: string; size: number; weight: number; color: string; italic?: boolean }[] = [];
         lines.push({ text: p.vacant ? this.t("UI_Vacant", "Vacant") : p.name, size: nameSize, weight: 600, color: hc ? fg : s.nameColor, italic: p.vacant });
@@ -772,7 +891,10 @@ export class Visual implements IVisual {
             else if (s.count === "total") foot.push(p.node.total + " " + this.t("UI_TeamShort", "in team"));
             else foot.push(p.node.direct + " / " + p.node.total);
         }
-        if (s.showValue && p.value !== null) foot.push(this.fmtValue(p.value));
+        // Quien tiene equipo enseña el total del equipo (él + todos los de debajo), como promete el pozo Value; antes
+        // salía su valor propio y un jefe que no vende aparecía vacío o con 0.
+        const shown = p.node.children.length ? this.teamValue(p.node) : p.value;
+        if (s.showValue && shown !== null) foot.push(this.fmtValue(shown));
         if (foot.length) lines.push({ text: foot.join(" · "), size: smallSize, weight: 400, color: hc ? fg : s.textColor });
         const totalH = lines.reduce((a, l) => a + l.size * 1.25, 0);
         const fitLines = totalH > ch - 8 ? lines.slice(0, Math.max(1, Math.floor((ch - 8) / (nameSize * 1.25)))) : lines;
@@ -810,7 +932,7 @@ export class Visual implements IVisual {
             const lbl = closed ? "+" + p.node.direct : "−";
             const w = closed ? Math.max(18, 8 + lbl.length * 6) : 16;
             tg.appendChild(this.el("rect", { x: -w / 2, y: -8, width: w, height: 16, rx: 8, fill: hc ? (pal.background?.value ?? "#fff") : "#FFFFFF", stroke: hc ? fg : s.linkColor }));
-            const tt = this.el("text", { x: 0, y: 4, "text-anchor": "middle", "font-size": 10, "font-weight": 600, fill: hc ? fg : "#535146", "font-family": "'Segoe UI',sans-serif" });
+            const tt = this.el("text", { x: 0, y: 4, "text-anchor": "middle", "font-size": this.fz(10), "font-weight": 600, fill: hc ? fg : "#535146", "font-family": "'Segoe UI',sans-serif" });
             tt.textContent = lbl;
             tg.appendChild(tt);
             tg.addEventListener("click", (e) => { e.stopPropagation(); this.toggle(p.node.id); });
@@ -931,7 +1053,7 @@ export class Visual implements IVisual {
         const L = this.layout; if (!L) return;
         const qs = heads.map(h => L.byId.get(h.node.id)).filter(Boolean) as Placed[];
         if (!qs.length) return;
-        const cw = clamp(this.settings.width, 80, 600), ch = clamp(this.settings.height, 28, 300);
+        const cw = clamp(this.settings.width, 80, 600), ch = this.cardH();
         const x0 = Math.min(...qs.map(q => q.x)), x1 = Math.max(...qs.map(q => q.x + cw));
         const y0 = Math.min(...qs.map(q => q.y)), y1 = Math.max(...qs.map(q => q.y + ch));
         if (this.k < 0.6) this.k = 0.8;
@@ -1083,14 +1205,14 @@ export class Visual implements IVisual {
         if (L.height * this.k > ah) {
             // Más alto que la vista (de izquierda a derecha): la raíz a media altura
             const root = L.placed[0];
-            if (root) this.ty = Math.min(top, this.H / 2 - (root.y + clamp(this.settings.height, 28, 300) / 2) * this.k);
+            if (root) this.ty = Math.min(top, this.H / 2 - (root.y + this.cardH() / 2) * this.k);
             if (this.settings.orientation === "lr" && root) this.tx = 16 - root.x * this.k;
         }
     }
 
     private ensureVisible(id: string): void {
         const L = this.layout; const q = L?.byId.get(id); if (!q) return;
-        const cw = clamp(this.settings.width, 80, 600), ch = clamp(this.settings.height, 28, 300);
+        const cw = clamp(this.settings.width, 80, 600), ch = this.cardH();
         const x = q.x * this.k + this.tx, y = q.y * this.k + this.ty;
         if (x < 0 || y < 30 || x + cw * this.k > this.W || y + ch * this.k > this.H) {
             this.tx = this.W / 2 - (q.x + cw / 2) * this.k; this.ty = this.H / 2 - (q.y + ch / 2) * this.k;
@@ -1116,7 +1238,7 @@ export class Visual implements IVisual {
         c.clearRect(0, 0, w, h);
         const sc = Math.min((w - 8) / L.width, (h - 8) / L.height);
         const ox = (w - L.width * sc) / 2, oy = (h - L.height * sc) / 2;
-        const cw = clamp(this.settings.width, 80, 600), ch = clamp(this.settings.height, 28, 300);
+        const cw = clamp(this.settings.width, 80, 600), ch = this.cardH();
         for (const p of L.placed) {
             const per = this.people.get(p.node.id);
             c.fillStyle = per?.dept ? this.deptColor(per) : "#2B6CB0";
@@ -1226,7 +1348,7 @@ export class Visual implements IVisual {
         this.rerender();
         const L = this.layout; const qd = L?.byId.get(id);
         if (qd) {
-            const cw = clamp(this.settings.width, 80, 600), ch = clamp(this.settings.height, 28, 300);
+            const cw = clamp(this.settings.width, 80, 600), ch = this.cardH();
             if (this.k < 0.6) this.k = 0.8;
             this.tx = this.W / 2 - (qd.x + cw / 2) * this.k; this.ty = this.H / 2 - (qd.y + ch / 2) * this.k;
             this.applyTransform();
@@ -1287,6 +1409,7 @@ export class Visual implements IVisual {
         link.addEventListener("click", () => this.host.launchUrl(GUIDE));
         p.appendChild(document.createTextNode(" "));
         p.appendChild(link);
+        ol.style.fontSize = this.fz(12) + "px"; p.style.fontSize = this.fz(11) + "px"; link.style.fontSize = this.fz(11) + "px";
         box.append(h, ol, p);
         this.root.appendChild(box);
         this.warnings();
@@ -1396,8 +1519,7 @@ export class Visual implements IVisual {
         return {
             cards: [
                 card("style", "Style template", [
-                    dd("style", "template", "Template", s.template, [["none", "Enum_tpl_none", "None"], ["clean", "Enum_tpl_clean", "Clean"], ["corporate", "Enum_tpl_corporate", "Corporate"],
-                        ["colorful", "Enum_tpl_colorful", "Colorful"], ["minimal", "Enum_tpl_minimal", "Minimal"], ["compact", "Enum_tpl_compact", "Compact"]]),
+                    dd("style", "template", "Template", s.template, STYLE_ITEMS),
                 ]),
                 card("cards", "Cards", [
                     num("cards", "width", "Card width", s.width), num("cards", "height", "Card height", s.height),
@@ -1434,13 +1556,21 @@ export class Visual implements IVisual {
                 card("colors", "Colors", [
                     dd("colors", "mode", "Color by", s.colorMode, [["department", "Enum_col_department", "Department"], ["level", "Enum_col_level", "Level"], ["value", "Enum_col_value", "Color value"], ["single", "Enum_col_single", "Single color"]]),
                     tog("colors", "tint", "Tint cards", s.tint), num("colors", "tintStrength", "Tint strength %", s.tintStrength),
-                    dd("colors", "palette", "Palette", s.palette, PALETTES.filter(pp => pp.type === "cat").map(pp => [pp.id, "Enum_pal_" + pp.id, pp.name + (pp.cb ? " (cb)" : "")] as [string, string, string])),
+                    dd("colors", "palette", "Palette", s.palette, [["theme", "Enum_pal_theme", "Report theme"] as [string, string, string],
+                        ...(s.palette.indexOf("style_") === 0 ? [[s.palette, "Enum_pal_style", "Style colors"] as [string, string, string]] : []),
+                        ...PALETTES.filter(pp => pp.type === "cat").map(pp => [pp.id, "Enum_pal_" + pp.id, pp.name + (pp.cb ? " (cb)" : "")] as [string, string, string])]),
                     col("colors", "lowColor", "Low color", s.lowColor), col("colors", "highColor", "High color", s.highColor),
                     col("colors", "background", "Background", s.background),
                 ]),
                 card("toolbar", "Toolbar", [
                     tog("toolbar", "show", "Show toolbar", s.toolbar), tog("toolbar", "search", "Search", s.search),
                     tog("toolbar", "minimap", "Minimap", s.minimap), tog("toolbar", "breadcrumb", "Breadcrumb", s.breadcrumb),
+                ]),
+                card("accessibility", "Accessibility", [
+                    dd("accessibility", "highContrast", "High contrast", s.hcMode, [["auto", "Enum_hc_auto", "Automatic (Windows setting)"], ["on", "Enum_hc_on", "On"]]),
+                    col("accessibility", "focusColor", "Focus color", s.focusColor),
+                    num("accessibility", "focusWidth", "Focus width", s.focusWidth),
+                    num("accessibility", "minTextSize", "Minimum text size", s.minText),
                 ]),
             ],
         } as any;

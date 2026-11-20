@@ -146,5 +146,22 @@
   "UI_WarnRowsDesktop": "Power BI Desktop 只向视觉对象发送前面的行：发布到服务后才能看到所有人。",
   "UI_WarnTitle": "Org Chart",
   "UI_ZoomIn": "放大",
-  "UI_ZoomOut": "缩小"
+  "UI_ZoomOut": "缩小",
+  "Enum_tpl_theme": "报表主题",
+  "Enum_tpl_boardroom": "Boardroom",
+  "Enum_tpl_ledger": "Ledger",
+  "Enum_tpl_editorial": "Editorial",
+  "Enum_tpl_signal": "Signal",
+  "Enum_tpl_aurora": "Aurora",
+  "Enum_tpl_terrace": "Terrace",
+  "Enum_pal_theme": "报表主题",
+  "Enum_pal_style": "样式颜色",
+  "Obj_accessibility": "辅助功能",
+  "Prop_accessibility_highContrast": "高对比度",
+  "Enum_hc_auto": "自动(Windows 设置)",
+  "Enum_hc_on": "开",
+  "Prop_accessibility_focusColor": "焦点颜色",
+  "Prop_accessibility_focusWidth": "焦点宽度",
+  "Prop_accessibility_minTextSize": "最小文本大小",
+  "UI_WarnMissingHint": "如果这些经理在你的表中,他们的行因 Value 为空而被排除:请在 Tooltips 中添加一个从不为空的度量值(例如行数)。"
 }

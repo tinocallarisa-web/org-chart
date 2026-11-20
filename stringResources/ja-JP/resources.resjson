@@ -146,5 +146,22 @@
   "UI_WarnRowsDesktop": "Power BI Desktop はビジュアルに最初の行のみを送ります。全員を表示するにはサービスに発行してください。",
   "UI_WarnTitle": "Org Chart",
   "UI_ZoomIn": "拡大",
-  "UI_ZoomOut": "縮小"
+  "UI_ZoomOut": "縮小",
+  "Enum_tpl_theme": "レポートのテーマ",
+  "Enum_tpl_boardroom": "Boardroom",
+  "Enum_tpl_ledger": "Ledger",
+  "Enum_tpl_editorial": "Editorial",
+  "Enum_tpl_signal": "Signal",
+  "Enum_tpl_aurora": "Aurora",
+  "Enum_tpl_terrace": "Terrace",
+  "Enum_pal_theme": "レポートのテーマ",
+  "Enum_pal_style": "スタイルの色",
+  "Obj_accessibility": "アクセシビリティ",
+  "Prop_accessibility_highContrast": "ハイコントラスト",
+  "Enum_hc_auto": "自動 (Windows の設定)",
+  "Enum_hc_on": "オン",
+  "Prop_accessibility_focusColor": "フォーカスの色",
+  "Prop_accessibility_focusWidth": "フォーカスの太さ",
+  "Prop_accessibility_minTextSize": "最小文字サイズ",
+  "UI_WarnMissingHint": "これらのマネージャーがテーブルにある場合、Value が空白のため行が除外されています。空白にならないメジャー (行数など) を Tooltips に追加してください。"
 }

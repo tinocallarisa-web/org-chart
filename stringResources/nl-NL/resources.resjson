@@ -146,5 +146,22 @@
   "UI_WarnRowsDesktop": "Power BI Desktop stuurt een visual alleen de eerste rijen: publiceer naar de service om iedereen te zien.",
   "UI_WarnTitle": "Org Chart",
   "UI_ZoomIn": "Inzoomen",
-  "UI_ZoomOut": "Uitzoomen"
+  "UI_ZoomOut": "Uitzoomen",
+  "Enum_tpl_theme": "Rapportthema",
+  "Enum_tpl_boardroom": "Boardroom",
+  "Enum_tpl_ledger": "Ledger",
+  "Enum_tpl_editorial": "Editorial",
+  "Enum_tpl_signal": "Signal",
+  "Enum_tpl_aurora": "Aurora",
+  "Enum_tpl_terrace": "Terrace",
+  "Enum_pal_theme": "Rapportthema",
+  "Enum_pal_style": "Stijlkleuren",
+  "Obj_accessibility": "Toegankelijkheid",
+  "Prop_accessibility_highContrast": "Hoog contrast",
+  "Enum_hc_auto": "Automatisch (Windows-instelling)",
+  "Enum_hc_on": "Aan",
+  "Prop_accessibility_focusColor": "Focuskleur",
+  "Prop_accessibility_focusWidth": "Focusdikte",
+  "Prop_accessibility_minTextSize": "Minimale tekstgrootte",
+  "UI_WarnMissingHint": "Als deze managers in uw tabel staan, zijn hun rijen weggelaten omdat Value voor hen leeg is: voeg aan Tooltips een meting toe die nooit leeg is (bijvoorbeeld een aantal rijen)."
 }

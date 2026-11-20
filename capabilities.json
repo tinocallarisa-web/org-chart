@@ -85,7 +85,8 @@
               },
               {
                 "value": "clean",
-                "displayName": "clean"
+                "displayName": "Report theme",
+                "displayNameKey": "Enum_tpl_theme"
               },
               {
                 "value": "corporate",
@@ -102,6 +103,36 @@
               {
                 "value": "compact",
                 "displayName": "compact"
+              },
+              {
+                "value": "boardroom",
+                "displayName": "Boardroom",
+                "displayNameKey": "Enum_tpl_boardroom"
+              },
+              {
+                "value": "ledger",
+                "displayName": "Ledger",
+                "displayNameKey": "Enum_tpl_ledger"
+              },
+              {
+                "value": "editorial",
+                "displayName": "Editorial",
+                "displayNameKey": "Enum_tpl_editorial"
+              },
+              {
+                "value": "signal",
+                "displayName": "Signal",
+                "displayNameKey": "Enum_tpl_signal"
+              },
+              {
+                "value": "aurora",
+                "displayName": "Aurora",
+                "displayNameKey": "Enum_tpl_aurora"
+              },
+              {
+                "value": "terrace",
+                "displayName": "Terrace",
+                "displayNameKey": "Enum_tpl_terrace"
               }
             ]
           }
@@ -544,6 +575,11 @@
           "type": {
             "enumeration": [
               {
+                "value": "theme",
+                "displayName": "Report theme",
+                "displayNameKey": "Enum_pal_theme"
+              },
+              {
                 "value": "tcviz",
                 "displayName": "tcviz"
               },
@@ -606,6 +642,36 @@
               {
                 "value": "retro",
                 "displayName": "retro"
+              },
+              {
+                "value": "style_boardroom",
+                "displayName": "Style colors",
+                "displayNameKey": "Enum_pal_style"
+              },
+              {
+                "value": "style_ledger",
+                "displayName": "Style colors",
+                "displayNameKey": "Enum_pal_style"
+              },
+              {
+                "value": "style_editorial",
+                "displayName": "Style colors",
+                "displayNameKey": "Enum_pal_style"
+              },
+              {
+                "value": "style_signal",
+                "displayName": "Style colors",
+                "displayNameKey": "Enum_pal_style"
+              },
+              {
+                "value": "style_aurora",
+                "displayName": "Style colors",
+                "displayNameKey": "Enum_pal_style"
+              },
+              {
+                "value": "style_terrace",
+                "displayName": "Style colors",
+                "displayNameKey": "Enum_pal_style"
               }
             ]
           }
@@ -686,6 +752,67 @@
         "view": {
           "type": {
             "text": true
+          }
+        }
+      }
+    },
+    "general": {
+      "displayName": "General",
+      "properties": {
+        "formatString": {
+          "type": {
+            "formatting": {
+              "formatString": true
+            }
+          }
+        }
+      }
+    },
+    "accessibility": {
+      "displayName": "Accessibility",
+      "displayNameKey": "Obj_accessibility",
+      "properties": {
+        "highContrast": {
+          "displayName": "High contrast",
+          "displayNameKey": "Prop_accessibility_highContrast",
+          "type": {
+            "enumeration": [
+              {
+                "value": "auto",
+                "displayName": "Automatic (Windows setting)",
+                "displayNameKey": "Enum_hc_auto"
+              },
+              {
+                "value": "on",
+                "displayName": "On",
+                "displayNameKey": "Enum_hc_on"
+              }
+            ]
+          }
+        },
+        "focusColor": {
+          "displayName": "Focus color",
+          "displayNameKey": "Prop_accessibility_focusColor",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "focusWidth": {
+          "displayName": "Focus width",
+          "displayNameKey": "Prop_accessibility_focusWidth",
+          "type": {
+            "numeric": true
+          }
+        },
+        "minTextSize": {
+          "displayName": "Minimum text size",
+          "displayNameKey": "Prop_accessibility_minTextSize",
+          "type": {
+            "numeric": true
           }
         }
       }

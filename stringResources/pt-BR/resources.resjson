@@ -146,5 +146,22 @@
   "UI_WarnRowsDesktop": "O Power BI Desktop envia ao visual só as primeiras linhas: publique no serviço para ver todos.",
   "UI_WarnTitle": "Org Chart",
   "UI_ZoomIn": "Ampliar",
-  "UI_ZoomOut": "Reduzir"
+  "UI_ZoomOut": "Reduzir",
+  "Enum_tpl_theme": "Tema do relatório",
+  "Enum_tpl_boardroom": "Boardroom",
+  "Enum_tpl_ledger": "Ledger",
+  "Enum_tpl_editorial": "Editorial",
+  "Enum_tpl_signal": "Signal",
+  "Enum_tpl_aurora": "Aurora",
+  "Enum_tpl_terrace": "Terrace",
+  "Enum_pal_theme": "Tema do relatório",
+  "Enum_pal_style": "Cores do estilo",
+  "Obj_accessibility": "Acessibilidade",
+  "Prop_accessibility_highContrast": "Alto contraste",
+  "Enum_hc_auto": "Automático (configuração do Windows)",
+  "Enum_hc_on": "Ativado",
+  "Prop_accessibility_focusColor": "Cor do foco",
+  "Prop_accessibility_focusWidth": "Espessura do foco",
+  "Prop_accessibility_minTextSize": "Tamanho mínimo do texto",
+  "UI_WarnMissingHint": "Se esses gestores estão na sua tabela, as linhas deles ficaram de fora porque Value está em branco para eles: adicione em Tooltips uma medida que nunca fique em branco (por exemplo, uma contagem de linhas)."
 }

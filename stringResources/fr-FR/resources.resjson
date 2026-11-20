@@ -146,5 +146,22 @@
   "UI_WarnRowsDesktop": "Power BI Desktop n'envoie au visuel que les premières lignes : publiez dans le service pour voir tout le monde.",
   "UI_WarnTitle": "Org Chart",
   "UI_ZoomIn": "Zoom avant",
-  "UI_ZoomOut": "Zoom arrière"
+  "UI_ZoomOut": "Zoom arrière",
+  "Enum_tpl_theme": "Thème du rapport",
+  "Enum_tpl_boardroom": "Boardroom",
+  "Enum_tpl_ledger": "Ledger",
+  "Enum_tpl_editorial": "Editorial",
+  "Enum_tpl_signal": "Signal",
+  "Enum_tpl_aurora": "Aurora",
+  "Enum_tpl_terrace": "Terrace",
+  "Enum_pal_theme": "Thème du rapport",
+  "Enum_pal_style": "Couleurs du style",
+  "Obj_accessibility": "Accessibilité",
+  "Prop_accessibility_highContrast": "Contraste élevé",
+  "Enum_hc_auto": "Automatique (paramètre Windows)",
+  "Enum_hc_on": "Activé",
+  "Prop_accessibility_focusColor": "Couleur du focus",
+  "Prop_accessibility_focusWidth": "Épaisseur du focus",
+  "Prop_accessibility_minTextSize": "Taille de texte minimale",
+  "UI_WarnMissingHint": "Si ces responsables figurent dans votre table, leurs lignes ont été écartées car Value est vide pour eux : ajoutez dans Tooltips une mesure jamais vide (par exemple un nombre de lignes)."
 }
