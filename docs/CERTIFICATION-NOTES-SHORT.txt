@@ -1,40 +1,38 @@
-Org Chart by TCViz 1.0.0.0 - GUID orgChartTCVizB36215279C0F4E9B93D25094C04F6842
+Org Chart by TCViz 1.1.0.0 - GUID orgChartTCVizB36215279C0F4E9B93D25094C04F6842
+Update of 1.0.0.0. FREE: no licence, no IVisualLicenseManager, nothing to unlock.
 
-SOURCE CODE
-github.com/tinocallarisa-web/org-chart, branch "certification".
-PUBLIC: no credentials needed, none included here.
+SOURCE: github.com/tinocallarisa-web/org-chart, branch "certification". Public.
 
-NO KEY NEEDED
-The visual is free: no licence, no IVisualLicenseManager, no paid features, nothing to
-unlock. Every feature works in the submitted package.
+CHANGED SINCE 1.0.0.0
+- Manager cards show the team total of Value (manager + everyone below).
+- Warning for Manager IDs not among Employee IDs now gives the cause (blank Value
+  drops the row) and the fix (a never-blank measure in Tooltips).
+- Style template: Report theme + 6 styles (Boardroom, Ledger, Editorial, Signal,
+  Aurora, Terrace). 1.0 templates hidden; saved reports keep their look.
+- Palette "Report theme"; Department colors card (one picker per department, max 60,
+  selector = first row of each department).
+- Accessibility card: High contrast Auto/On, focus color/width, minimum text size.
+- general.formatString (dynamic format strings). Card text kept at 4.5:1 contrast.
+- Visual-drawn texts localized in the bundle (12 locales).
+- allowInteractions read from host.hostCapabilities. npm audit: 0.
 
-PACKAGE WARNING - FetchMoreData
-pbiviz only detects fetchMoreData in table mappings. This visual uses a categorical
-mapping (window 30000) and calls host.fetchMoreData(true) in src/visual.ts
-(streamSegments), with Append handling and a 60-round cap. In Desktop the warning icon
-explains that only the first segment arrives.
+PACKAGE WARNING - FetchMoreData: categorical mapping (window 30000);
+host.fetchMoreData(true) in src/visual.ts (streamSegments), 60-round cap.
+RENDERING EVENTS: one started/finished-or-failed pair per update().
+PERSISTED STATE: persistProperties (object "state"), never during bookmark restore.
+PRIVACY: privileges []. No network calls, no telemetry. Photos Base64 only.
 
-RENDERING EVENTS: one started/finished-or-failed pair per update(). Clicks, collapse,
-search and zoom redraw without calling update() and without rendering events.
-PERSISTED STATE: open branches and focused team are saved with persistProperties
-(object "state", a short JSON of Employee IDs). Never called during a bookmark restore.
-PRIVACY: privileges []. No network calls, no telemetry. Photos are Base64 only; the
-landing page link uses host.launchUrl.
+HOW TO TEST (sample .pbix)
+1. Employee ID + Manager ID: chart draws; a manager card shows the team total;
+   tooltip shows own value and the team value.
+2. Make Value blank for one manager: his row is dropped, his team goes to the top,
+   the warning icon names the ID and the fix. Add a row count to Tooltips: he returns.
+3. Format > Style template: switch the 6 styles and Report theme.
+4. Format > Department colors: change one department; it wins over the style.
+5. Format > Accessibility: High contrast On (black on white); Minimum text size 14
+   (cards grow); Tab to a card to see the focus color/width.
+6. Click a manager: page filters by the team. Bookmarks restore the selection.
 
-FEATURES
-Employee ID + Manager ID tree (any depth, loops/duplicates/missing managers handled and
-shown with the warning icon), dotted-line managers, vacancies, photos, team size and
-team value. Selection of a person or whole team, Ctrl+click, highlight, bookmarks
-(registerOnSelectCallback), tooltips and report page tooltips, context menu, fx on card
-colour, keyboard tree navigation with ARIA tree roles, high contrast, on-object
-formatting, landing page, 12 locales.
-
-WHAT TO CHECK
-1. Employee ID and Manager ID: the chart draws from the top; folded cards show +N.
-2. Click a manager: the page filters by the whole team. Click again: cleared.
-3. Card corner button: only that team, breadcrumb on top; click Everyone to return.
-4. Toolbar: search a name; one level down/up; expand/collapse all.
-5. Save a bookmark with a selection, clear, apply: same people selected and shown.
-6. Format mode: click a name, a card, a line: on-object panes open.
-
-Support: tinocallarisa-web.github.io/org-chart/support.html
+Support: https://tinocallarisa-web.github.io/org-chart/support.html
+Privacy: https://tinocallarisa-web.github.io/org-chart/privacy.html
+Terms: https://tinocallarisa-web.github.io/org-chart/terms.html

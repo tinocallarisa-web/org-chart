@@ -1,0 +1,63 @@
+<p>An org chart should answer two questions in a second: who reports to whom, and how big each team is. With a large organisation, most charts either shrink to text nobody can read or need a separate column for every level. And a sales manager who sells nothing shows an empty card, when what you wanted to see was the whole team's number.</p>
+<p>Org Chart by TCViz is a free Power BI visual — every feature, no licence, no limit on people, no watermark. Two columns of your model draw it: the employee ID and the manager ID, at any depth. Add names, job titles, departments, photos and a measure: it opens as many levels as fit with every name readable, and each manager's card shows the total of their whole team.</p>
+<p><strong>🎯 BEST FOR</strong></p>
+<ul>
+<li>HR reviews: headcount, cost or FTE by team, from the CEO down</li>
+<li>Sales organisations: each manager's card with the team's sales</li>
+<li>Any parent–child table: cost centres, legal entities, a chart of accounts</li>
+</ul>
+<p><strong>🆕 WHAT'S NEW IN 1.1.0.0</strong></p>
+<ul>
+<li>Manager cards show the team total (the manager plus everyone below); the tooltip keeps the person's own value</li>
+<li>Missing managers explained: the warning gives the likely cause (a blank Value) and the fix</li>
+<li>Report theme plus six TCViz collection styles: Boardroom, Ledger, Editorial, Signal, Aurora, Terrace</li>
+<li>Department colors: pick the colour of each department</li>
+<li>An Accessibility card, dynamic format strings, and the visual's own texts translated in Power BI Desktop</li>
+</ul>
+<p><strong>▸ FIND ANYONE IN A LARGE ORGANISATION</strong></p>
+<ul>
+<li>Opens as many levels as fit with readable names; each folded card shows how many people report to it</li>
+<li>Open or close one level at a time, one branch, or everything</li>
+<li>Show only one team, with a breadcrumb (Everyone › CEO › CFO) to go back up</li>
+<li>Search by name, job title, department or ID: the branch opens and the person is marked</li>
+<li>Zoom, pan, fit to view, a minimap, and a compact layout so wide teams fit</li>
+</ul>
+<p><strong>▸ THE CARDS</strong></p>
+<ul>
+<li>Photo or initials, name, job title, department, team size</li>
+<li>A measure on each card (cost, FTE, sales), with the team total on managers' cards</li>
+<li>Vacancies from rows without a name; dotted-line managers for matrix teams</li>
+</ul>
+<p><strong>▸ LOOK</strong></p>
+<ul>
+<li>Report theme, or one of six styles shared with the other TCViz visuals</li>
+<li>Colour by department, level, value or a single colour; a colour picker per department</li>
+<li>Tinted cards, department groups, elbow, straight or curved lines with labels</li>
+<li>Conditional formatting (fx): rules that colour each card by its result</li>
+</ul>
+<p><strong>🔗 WORKS LIKE A NATIVE VISUAL</strong></p>
+<ul>
+<li>Click a manager to filter the page by their whole team, or just by them; Ctrl+click for more</li>
+<li>Highlighting, bookmarks that restore the selection, context menu; "Edit interactions" is respected</li>
+<li>Tooltips and report page tooltips; dynamic format strings, so labels match the rest of your report</li>
+<li>Format on the canvas; 12 languages; more than 30,000 rows in the Power BI service</li>
+</ul>
+<p><strong>♿ ACCESSIBILITY</strong></p>
+<ul>
+<li>Keyboard navigation through the tree, with screen reader labels</li>
+<li>High contrast follows Windows, or can be turned on for the visual alone</li>
+<li>Focus colour and width, and a minimum text size: cards grow taller to fit</li>
+<li>4.5:1 contrast for card text on any fill; 4 colour-blind safe palettes</li>
+</ul>
+<p><strong>▸ REAL DATA</strong></p>
+<p>Several people at the top, reporting loops, repeated IDs and managers missing from the data do not break the chart: it draws what it can and the warning icon says what it found and how to fix it.</p>
+<p><strong>🔒 PRIVACY</strong></p>
+<p>The visual has no network permission, so Power BI does not let it send or load anything. That is why photos have to be stored in the model as Base64: a link to a photo on a web server is not loaded, on purpose.</p>
+<p><strong>🚀 GETTING STARTED</strong></p>
+<p>You need a table with an employee ID and a manager ID column.</p>
+<ol>
+<li>Drag the person's ID to Employee ID and their manager's ID to Manager ID.</li>
+<li>Optional: Name, Job title, Department, Photo, and a measure in Value.</li>
+<li>Format → Style template.</li>
+</ol>
+<p>Documentation, FAQ and examples: https://tinocallarisa-web.github.io/org-chart/support.html<br>Questions: https://github.com/tinocallarisa-web/org-chart/discussions<br>Support: support@tcviz.com</p>

@@ -1,4 +1,4 @@
-# Org Chart by TCViz — Tips & Hints (v1.0.0.0)
+# Org Chart by TCViz — Tips & Hints (v1.1.0.0)
 
 An org chart answers two questions: **who reports to whom, and how big each team is.** This page
 is the short version of everything worth knowing.
@@ -18,6 +18,30 @@ Full documentation, with search: https://tinocallarisa-web.github.io/org-chart/s
 
 ---
 
+## New in 1.1
+
+- **Manager cards show the team total.** With a measure in Value, a manager's card shows the
+  total of the whole team — the manager plus everyone below. The tooltip still shows the
+  person's own value and *Value · team*.
+- **Managers missing? Look at Value.** When Value is blank for a manager (one who does not sell,
+  for example), Power BI leaves that row out, and their people appear at the top. The warning
+  icon names the IDs. Fix: put a measure that is never blank — a count of rows — in **Tooltips**.
+- **Report theme + six styles.** Format → Style template: Report theme (the default) or
+  Boardroom, Ledger, Editorial, Signal, Aurora, Terrace — the same styles as the other TCViz
+  visuals. Whatever you set by hand wins over the style.
+- **Department colors.** One colour picker per department (up to 60). It wins over the palette
+  and the style.
+- **Accessibility card.** High contrast *On* forces black on white for this visual; Focus color
+  and Focus width style the keyboard outline; Minimum text size makes cards grow taller to fit.
+- **Readable cards on any colour.** Card text keeps 4.5:1 contrast on tints, fx colours and
+  department colours: a too-faint colour turns near-black or white.
+- **Dynamic format strings.** When every row of the measure shares one format string, cards,
+  line labels and tooltips use it.
+- **Your language in Desktop too.** Toolbar, warnings, card footer and start page follow
+  Power BI's language (12 languages).
+
+---
+
 ## Field wells
 
 | Well | Kind | What it does |
@@ -29,9 +53,9 @@ Full documentation, with search: https://tinocallarisa-web.github.io/org-chart/s
 | **Job title** | Grouping | Second line of the card. |
 | **Department** | Grouping | Colours the cards and can group teams. |
 | **Photo** | Grouping | Base64 image (`data:image/jpeg;base64,…`). Without it: initials. |
-| **Value** | Measure | Shown per card and added up for each manager's team. |
+| **Value** | Measure | Shown per card; a manager's card shows the whole team's total. |
 | **Color value** | Measure | Gradient colour when Color by is Color value. |
-| **Tooltips** | Measure | Extra values on hover. |
+| **Tooltips** | Measure | Extra values on hover. Also where a never-blank measure (a row count) keeps managers without a Value in the chart. |
 
 ---
 
@@ -67,8 +91,8 @@ Full documentation, with search: https://tinocallarisa-web.github.io/org-chart/s
 
 ## Format pane
 
-- **Style template** — Clean, Corporate, Colorful, Minimal, Compact. A template only fills in what
-  you have not set yourself.
+- **Style template** — Report theme, Boardroom, Ledger, Editorial, Signal, Aurora, Terrace. A style
+  only fills in what you have not set yourself.
 - **Cards** — width and height, photo and its shape and ring, job title, department, team size
   (direct, whole team, both), value, font and sizes, card colour with **fx**, border, corner
   radius, department band (top, left, none), shadow, selection colour.
@@ -77,8 +101,10 @@ Full documentation, with search: https://tinocallarisa-web.github.io/org-chart/s
 - **Lines** — elbow, straight or curved; colour, width, dashed; department colour; dotted-line
   managers; labels with team size or team value.
 - **Colors** — by department, level, value or a single colour; tint cards and tint strength;
-  16 palettes (4 colour-blind safe); low and high colours; background.
+  Report theme palette or 16 palettes (4 colour-blind safe); low and high colours; background.
+- **Department colors** — one colour picker per department (up to 60).
 - **Toolbar** — show or hide the toolbar, search, minimap and breadcrumb.
+- **Accessibility** — high contrast (Automatic or On), focus colour and width, minimum text size.
 
 ---
 
@@ -112,6 +138,8 @@ Full documentation, with search: https://tinocallarisa-web.github.io/org-chart/s
 
 - **Several people without a manager** — several charts side by side.
 - **A Manager ID that is not an employee** — that team appears at the top; the warning icon lists it.
+  Often the manager *is* in your table but has a blank Value, so Power BI left the row out: add a
+  never-blank measure (a count of rows) to Tooltips.
 - **A reporting loop** — broken where it closes; the warning icon says where.
 - **A repeated Employee ID** — the first row is used; the warning icon lists it.
 - **More than 30,000 rows** — the Power BI service sends them all; Desktop sends only the first

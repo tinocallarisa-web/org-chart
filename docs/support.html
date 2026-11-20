@@ -178,16 +178,18 @@
 
 <div class="wrap">
 
-  <div class="verpill">Visual v1.0.0.0 &nbsp;·&nbsp; docs updated 11 Oct 2026 &nbsp;·&nbsp; <a href="changelog.html">what's new</a></div>
+  <div class="verpill">Visual v1.1.0.0 &nbsp;·&nbsp; docs updated 20 Nov 2026 &nbsp;·&nbsp; <a href="changelog.html">what's new</a></div>
 
   <p class="lead"><strong>Free — every feature, no licence, no watermark.</strong> Supported Power BI features:
   cross-filtering by a person or <strong>their whole team</strong>, Ctrl+click multi-select, highlighting ·
   <strong>bookmarks</strong> · standard and <strong>report page tooltips</strong> · context menu ·
   <strong>conditional formatting (fx)</strong> on card colour · <strong>format on the canvas</strong> (on-object) ·
-  keyboard navigation through the tree with ARIA labels · high contrast · <strong>number formats from the model</strong> ·
-  <strong>12 panel languages</strong> · data streaming past 30,000 rows in the Power BI service. Org chart:
+  keyboard navigation through the tree with ARIA labels · high contrast and an <strong>Accessibility</strong> card ·
+  <strong>number formats from the model</strong>, including <strong>dynamic format strings</strong> ·
+  <strong>12 languages</strong> · data streaming past 30,000 rows in the Power BI service. Org chart:
   employee and manager IDs, photos, vacancies, <strong>dotted-line managers</strong>, collapse and expand,
-  <strong>breadcrumb navigation</strong>, search, zoom, minimap, compact layout, department groups, 5 style templates.</p>
+  <strong>breadcrumb navigation</strong>, search, zoom, minimap, compact layout, department groups, <strong>team totals on manager cards</strong>, Report theme and
+  <strong>six collection styles</strong>, a colour per department.</p>
 
   <!-- Video -->
   <div class="video-wrap">
@@ -203,9 +205,9 @@
     <h3>2. Two fields draw the chart</h3>
     <p>Drag the person's ID to <strong>Employee ID</strong> and their manager's ID to <strong>Manager ID</strong>. The person with an empty Manager ID is the top of the chart. That is all the visual needs: it works out the levels itself, however deep the organisation is.</p>
     <h3>3. Make the cards useful</h3>
-    <p>Add <strong>Name</strong>, <strong>Job title</strong>, <strong>Department</strong> and <strong>Photo</strong>. Put a measure in <strong>Value</strong> (cost, FTE, sales…) to show it on each card and add it up for each manager's team.</p>
+    <p>Add <strong>Name</strong>, <strong>Job title</strong>, <strong>Department</strong> and <strong>Photo</strong>. Put a measure in <strong>Value</strong> (cost, FTE, sales…): each person's card shows their own value, and a manager's card shows the <strong>total of the whole team</strong> — the manager plus everyone below.</p>
     <h3>4. Pick a look</h3>
-    <p>Format → <strong>Style template</strong>: Clean, Corporate, Colorful, Minimal or Compact. Anything you set by hand wins over the template.</p>
+    <p>Format → <strong>Style template</strong>: Report theme (the default) or one of six collection styles — Boardroom, Ledger, Editorial, Signal, Aurora, Terrace. Anything you set by hand wins over the style.</p>
   </div>
 
   <!-- Field wells -->
@@ -219,9 +221,9 @@
     <tr><td><strong>Job title</strong></td><td>1 column</td><td>Second line of the card.</td></tr>
     <tr><td><strong>Department</strong></td><td>1 column</td><td>Colours the cards and can group teams in boxes.</td></tr>
     <tr><td><strong>Photo</strong></td><td>1 column</td><td>A Base64 image stored in your model (<code>data:image/jpeg;base64,…</code>; PNG, JPEG, GIF, SVG or WebP). Without a photo, the card shows the person's initials. Web links are not loaded, on purpose — see <a href="privacy.html">Privacy</a>.</td></tr>
-    <tr><td><strong>Value</strong></td><td>1 measure</td><td>Shown on each card and added up for each manager's whole team (tooltip and line labels).</td></tr>
+    <tr><td><strong>Value</strong></td><td>1 measure</td><td>Shown on each person's card. A manager's card shows the total of the whole team (the manager plus everyone below); the tooltip gives both the person's own value and <em>Value · team</em>. Line labels can show the team total too. A dynamic format string is used when every row shares it.</td></tr>
     <tr><td><strong>Color value</strong></td><td>1 measure</td><td>Colours the cards on a gradient when Colors → Color by is <em>Color value</em>.</td></tr>
-    <tr><td><strong>Tooltips</strong></td><td>measures</td><td>Extra values in the tooltip.</td></tr>
+    <tr><td><strong>Tooltips</strong></td><td>measures</td><td>Extra values in the tooltip. Also the place for a measure that is never blank (a count of rows) when managers without a Value would otherwise be left out — see <a href="#quality">Real data</a>.</td></tr>
   </table>
   <p>Limits: Power BI sends up to <strong>30,000 rows</strong> per block. In the Power BI service the visual asks for the next blocks automatically; Power BI Desktop only sends the first block to custom visuals, and the warning icon in the visual header says so.</p>
 
@@ -242,7 +244,8 @@
   <h2 id="format">Format Pane</h2>
   <div class="card">
     <h3>Style template</h3>
-    <p><strong>None</strong>, <strong>Clean</strong> (default), <strong>Corporate</strong> (left band, square photos, shadow), <strong>Colorful</strong> (cards tinted by department), <strong>Minimal</strong> (no borders, curved lines) and <strong>Compact</strong> (small cards without photos). A template only fills in what you have not changed yourself.</p>
+    <p><strong>Report theme</strong> (default) uses the ink of your report theme and gives departments the theme's colours. The six <strong>TCViz collection styles</strong> — <strong>Boardroom</strong> (dark navy, gold), <strong>Ledger</strong> (paper, serif, burgundy), <strong>Editorial</strong> (white, serif, red), <strong>Signal</strong> (white, green), <strong>Aurora</strong> (dark gradient, mint) and <strong>Terrace</strong> (warm cream, terracotta) — each set the background, the card, the ink, the lines and their own department palette. They are the same styles as the other TCViz visuals, so a report can share one look.</p>
+    <p>A style only fills in what you have not changed yourself: anything you set by hand in the Format pane wins. Reports saved with the 1.0 templates (None, Corporate, Colorful, Minimal, Compact) keep their look; those templates are no longer in the dropdown.</p>
   </div>
   <div class="card">
     <h3>Cards</h3>
@@ -252,7 +255,7 @@
       <tr><td>Show photo · Photo shape · Photo ring</td><td>On · Circle · On</td><td>Circle, Rounded or Square. The ring takes the department (or level) colour, so the palette shows on cards with photos too.</td></tr>
       <tr><td>Show job title · Show department</td><td>On · Off</td><td></td></tr>
       <tr><td>Team size</td><td>Direct reports</td><td>None, Direct reports, Whole team, or both.</td></tr>
-      <tr><td>Show value</td><td>On</td><td>The Value measure, formatted as in your model.</td></tr>
+      <tr><td>Show value</td><td>On</td><td>The Value measure, formatted as in your model (dynamic format strings included). On a manager's card, the total of the whole team.</td></tr>
       <tr><td>Font · Name size · Name color · Text color</td><td>Segoe UI · 12</td><td></td></tr>
       <tr><td>Card color</td><td>White</td><td>Supports <strong>fx</strong> conditional formatting: rules, gradient or a field value give each card its own colour.</td></tr>
       <tr><td>Border color · width · Corner radius · Shadow</td><td>grey · 1 · 8 · Off</td><td></td></tr>
@@ -284,11 +287,24 @@
       <tr><td>Color value</td><td>Cards on a gradient from Low color to High color by the Color value measure (or Value).</td></tr>
       <tr><td>Single color</td><td>Card color for every card.</td></tr>
     </table>
-    <p><strong>Tint cards</strong> fills each card with a shade of its department or level colour; <strong>Tint strength %</strong> (default 22) sets how strong. 16 palettes, 4 of them colour-blind safe. Background: optional; empty keeps the visual transparent.</p>
+    <p><strong>Tint cards</strong> fills each card with a shade of its department or level colour, mixed with the style's card colour; <strong>Tint strength %</strong> (default 22) sets how strong. Card text keeps at least 4.5:1 contrast on any fill: when your name or text colour would be too faint, it turns near-black or white. <strong>Palette</strong>: Report theme (the theme's colours), the active style's colours, or 16 palettes, 4 of them colour-blind safe. Background: optional; empty keeps the visual transparent (or the style's background).</p>
+  </div>
+  <div class="card">
+    <h3>Department colors</h3>
+    <p>Appears when the Department field is filled: one colour picker per department (up to 60), named after it. A colour picked here wins over the palette and the style, and is used for the band, initials, ring, tint, lines and department groups.</p>
   </div>
   <div class="card">
     <h3>Toolbar</h3>
     <p>Show or hide the toolbar, search, minimap and breadcrumb. On small tiles the toolbar and search hide themselves.</p>
+  </div>
+  <div class="card">
+    <h3>Accessibility</h3>
+    <table>
+      <tr><th>Setting</th><th>Default</th><th>Notes</th></tr>
+      <tr><td>High contrast</td><td>Automatic</td><td>Automatic follows the Windows high-contrast setting. On forces black on white for this visual alone.</td></tr>
+      <tr><td>Focus color · Focus width</td><td>Dark blue · 2.5</td><td>The outline of the card or button that has keyboard focus (1–6 pixels).</td></tr>
+      <tr><td>Minimum text size</td><td>6</td><td>No text in the visual is drawn smaller (6–24). Cards grow taller when their lines no longer fit.</td></tr>
+    </table>
   </div>
   <div class="card">
     <h3>Format on the canvas</h3>
@@ -312,7 +328,9 @@
     <ul>
       <li><strong>Keyboard:</strong> Tab into the chart, then move through the tree — top to bottom: <code>↑</code> manager, <code>↓</code> first report (opens the branch if needed), <code>←</code> <code>→</code> colleagues; left to right the arrows turn with the chart. <code>Home</code> goes to the top, <code>Enter</code> or <code>Space</code> selects (<code>Ctrl</code> to add), <code>+</code>/<code>-</code> expand and collapse, <code>F</code> shows only that team, <code>Esc</code> clears, <code>Shift+F10</code> opens the context menu.</li>
       <li><strong>Screen readers:</strong> the chart is a tree; each card is announced with name, job title, department, number of direct reports, level and whether it is expanded.</li>
-      <li><strong>High contrast:</strong> with a Windows high-contrast theme, cards, lines and text use the system colours.</li>
+      <li><strong>High contrast:</strong> with a Windows high-contrast theme, cards, lines and text use the system colours. Format → Accessibility → High contrast <em>On</em> forces black on white for this visual even without it.</li>
+      <li><strong>Focus and text size:</strong> Focus color and Focus width set the keyboard focus outline; Minimum text size keeps every text at or above a size you choose, and cards grow taller to fit.</li>
+      <li><strong>Readable cards:</strong> name and text keep at least 4.5:1 contrast on any card fill — tint, fx, colour value or department colour. Initials turn dark on light circles.</li>
       <li>4 colour-blind safe palettes (Okabe-Ito and Paul Tol).</li>
     </ul>
   </div>
@@ -322,7 +340,7 @@
   <div class="card">
     <ul>
       <li><strong>Several people without a manager</strong>: several charts side by side.</li>
-      <li><strong>A Manager ID that is not an employee</strong>: that person's team is shown at the top, and the warning icon lists the missing IDs.</li>
+      <li><strong>A Manager ID that is not an employee</strong>: that person's team is shown at the top, and the warning icon lists the missing IDs. The most common cause is not a missing person: <strong>when Value is blank for a manager, Power BI leaves that row out</strong> of the data it sends to the visual. Add a measure that is never blank — for example a count of rows — to <strong>Tooltips</strong>, and the manager comes back with their team underneath.</li>
       <li><strong>A reporting loop</strong> (A reports to B, B reports to A): the loop is broken, one of them becomes a top, and the warning icon says where.</li>
       <li><strong>A repeated Employee ID</strong>: the first row is used, and the warning icon lists it.</li>
       <li><strong>Someone who is their own manager</strong>: treated as a top.</li>
@@ -335,6 +353,8 @@
     <tr><th>What you see</th><th>Why</th><th>What to do</th></tr>
     <tr><td>The start page with three steps</td><td>Employee ID or Manager ID is empty.</td><td>Both fields are required.</td></tr>
     <tr><td>Everyone at the top, side by side</td><td>Manager ID values do not match Employee ID values (text against numbers, leading zeros, spaces).</td><td>Use the same column type and format for both IDs. The warning icon lists the IDs it could not find.</td></tr>
+    <tr><td>Some managers are missing and their teams appear at the top</td><td>Value is blank for those managers (they do not sell, have no cost…), so Power BI leaves their rows out.</td><td>Add a measure that is never blank, such as a count of rows, to Tooltips. The warning icon names the missing IDs and says this too.</td></tr>
+    <tr><td>A manager's card shows a bigger number than the tooltip's Value</td><td>Manager cards show the total of the whole team.</td><td>The tooltip gives both: the person's own value and <em>Value · team</em>.</td></tr>
     <tr><td>Photos do not appear</td><td>The Photo value is a web link, is longer than Power BI's 32,766-character limit for a text value, or does not start with <code>data:image/</code>.</td><td>Store small images as Base64 (a 96×96 JPEG is about 5,000 characters).</td></tr>
     <tr><td>Only two levels are open</td><td><em>Open levels to fit</em> keeps names readable.</td><td>Expand branches by hand, zoom in, or turn it off and set <em>Levels open at start</em>.</td></tr>
     <tr><td>A warning icon about rows in Desktop</td><td>Power BI Desktop sends custom visuals only the first 30,000 rows.</td><td>Publish to the Power BI service.</td></tr>
@@ -344,6 +364,9 @@
   <!-- FAQ -->
   <h2 id="faq">FAQ</h2>
   <details><summary>Is it really free?</summary><div class="faq-body"><p>Yes. Every feature on this page is included, with no licence, no limit on the number of people, no trial and no watermark.</p></div></details>
+  <details><summary>My managers disappear, or everyone is at the top. Why?</summary><div class="faq-body"><p>Two causes, and the warning icon in the visual header lists the Manager IDs it could not find. <strong>1. Blank Value:</strong> if a manager has no value in the Value measure (a manager who does not sell, for example), Power BI leaves their row out of the data, so their people have no manager to hang from and appear at the top. Add a measure that is never blank — a count of rows is enough — to <strong>Tooltips</strong>. <strong>2. IDs that do not match:</strong> Manager ID and Employee ID must have the same type and format (no text against numbers, leading zeros or trailing spaces).</p></div></details>
+  <details><summary>Why does a manager's card show more than their own value?</summary><div class="faq-body"><p>From 1.1, a manager's card shows the total of the whole team: the manager plus everyone below. The tooltip still shows the person's own value and <em>Value · team</em>.</p></div></details>
+  <details><summary>Can I choose the colour of each department?</summary><div class="faq-body"><p>Yes: Format → <strong>Department colors</strong> has a colour picker for each department (up to 60). It wins over the palette and the style.</p></div></details>
   <details><summary>Is it only for people?</summary><div class="faq-body"><p>No. Any parent–child table works: a chart of accounts, cost centres, legal entities, a product tree. Put the item's ID in Employee ID and its parent's ID in Manager ID.</p></div></details>
   <details><summary>How deep can the organisation be?</summary><div class="faq-body"><p>There is no level limit: the levels come from the Manager ID chain, not from separate columns.</p></div></details>
   <details><summary>How do I show a vacancy?</summary><div class="faq-body"><p>Add a row for the position with an Employee ID, a Manager ID and an empty Name. It is drawn as <em>Vacant</em> with a dashed border.</p></div></details>
@@ -353,7 +376,7 @@
   <details><summary>What do bookmarks remember?</summary><div class="faq-body"><p>Power BI bookmarks keep a custom visual's <strong>selection</strong>: applying one selects the same people again, opens their branches and centres them. The branches you open by hand and the team you focus on are kept while you work — through filters and refreshes — but a bookmark does not store them; that is how bookmarks work for all custom visuals.</p></div></details>
   <details><summary>Clicking a manager filters everyone under them. Can it filter just the manager?</summary><div class="faq-body"><p>Turn off Layout → <strong>Click selects the whole team</strong>.</p></div></details>
   <details><summary>Can I drill down?</summary><div class="faq-body"><p>The org chart is already the hierarchy: open a branch, or use <strong>Show only this team</strong> to go into it, and the breadcrumb to come back up. Power BI's drill buttons apply to hierarchies of columns, which an employee–manager table does not have.</p></div></details>
-  <details><summary>Which languages is the Format pane in?</summary><div class="faq-body"><p>English, Spanish, French, German, Italian, Portuguese (Brazil and Portugal), Dutch, Polish, Japanese, Simplified Chinese and Korean. It follows the language of Power BI.</p></div></details>
+  <details><summary>Which languages is the visual in?</summary><div class="faq-body"><p>English, Spanish, French, German, Italian, Portuguese (Brazil and Portugal), Dutch, Polish, Japanese, Simplified Chinese and Korean — the Format pane and the texts the visual draws (toolbar, warnings, card footer, start page), in Power BI Desktop and in the service. It follows the language of Power BI.</p></div></details>
   <details><summary>Does my data leave Power BI?</summary><div class="faq-body"><p>No. The visual has no network permission: it cannot send or load anything. See <a href="privacy.html">Privacy</a>.</p></div></details>
 
   <!-- Contact -->
