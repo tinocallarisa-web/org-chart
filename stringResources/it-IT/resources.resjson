@@ -163,5 +163,7 @@
   "Prop_accessibility_focusColor": "Colore dello stato attivo",
   "Prop_accessibility_focusWidth": "Spessore dello stato attivo",
   "Prop_accessibility_minTextSize": "Dimensione minima del testo",
-  "UI_WarnMissingHint": "Se questi responsabili sono nella tabella, le loro righe sono state escluse perché Value è vuoto: aggiungi in Tooltips una misura mai vuota (ad esempio un conteggio di righe)."
+  "UI_WarnMissingHint": "Se questi responsabili sono nella tabella, le loro righe sono state escluse perché Value è vuoto: aggiungi in Tooltips una misura mai vuota (ad esempio un conteggio di righe).",
+  "Obj_deptColors": "Colori per reparto",
+  "Prop_deptColors_fill": "Colore"
 }

@@ -163,5 +163,7 @@
   "Prop_accessibility_focusColor": "Kolor fokusu",
   "Prop_accessibility_focusWidth": "Grubość fokusu",
   "Prop_accessibility_minTextSize": "Minimalny rozmiar tekstu",
-  "UI_WarnMissingHint": "Jeśli ci kierownicy są w tabeli, ich wiersze pominięto, bo Value jest dla nich puste: dodaj do Tooltips miarę, która nigdy nie jest pusta (np. liczbę wierszy)."
+  "UI_WarnMissingHint": "Jeśli ci kierownicy są w tabeli, ich wiersze pominięto, bo Value jest dla nich puste: dodaj do Tooltips miarę, która nigdy nie jest pusta (np. liczbę wierszy).",
+  "Obj_deptColors": "Kolory działów",
+  "Prop_deptColors_fill": "Kolor"
 }

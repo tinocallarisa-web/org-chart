@@ -163,5 +163,7 @@
   "Prop_accessibility_focusColor": "Color del foco",
   "Prop_accessibility_focusWidth": "Grosor del foco",
   "Prop_accessibility_minTextSize": "Tamaño mínimo de texto",
-  "UI_WarnMissingHint": "Si esos responsables están en tu tabla, sus filas se han quedado fuera porque Value está en blanco para ellos: añade en Tooltips una medida que nunca esté en blanco (por ejemplo, un recuento de filas)."
+  "UI_WarnMissingHint": "Si esos responsables están en tu tabla, sus filas se han quedado fuera porque Value está en blanco para ellos: añade en Tooltips una medida que nunca esté en blanco (por ejemplo, un recuento de filas).",
+  "Obj_deptColors": "Colores por departamento",
+  "Prop_deptColors_fill": "Color"
 }

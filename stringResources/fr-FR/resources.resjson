@@ -163,5 +163,7 @@
   "Prop_accessibility_focusColor": "Couleur du focus",
   "Prop_accessibility_focusWidth": "Épaisseur du focus",
   "Prop_accessibility_minTextSize": "Taille de texte minimale",
-  "UI_WarnMissingHint": "Si ces responsables figurent dans votre table, leurs lignes ont été écartées car Value est vide pour eux : ajoutez dans Tooltips une mesure jamais vide (par exemple un nombre de lignes)."
+  "UI_WarnMissingHint": "Si ces responsables figurent dans votre table, leurs lignes ont été écartées car Value est vide pour eux : ajoutez dans Tooltips une mesure jamais vide (par exemple un nombre de lignes).",
+  "Obj_deptColors": "Couleurs par service",
+  "Prop_deptColors_fill": "Couleur"
 }

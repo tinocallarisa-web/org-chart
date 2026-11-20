@@ -713,6 +713,23 @@
       "displayName": "Colors",
       "displayNameKey": "Obj_colors"
     },
+    "deptColors": {
+      "displayName": "Department colors",
+      "displayNameKey": "Obj_deptColors",
+      "properties": {
+        "fill": {
+          "displayName": "Color",
+          "displayNameKey": "Prop_deptColors_fill",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        }
+      }
+    },
     "toolbar": {
       "properties": {
         "show": {

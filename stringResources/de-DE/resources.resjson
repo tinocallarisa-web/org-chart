@@ -163,5 +163,7 @@
   "Prop_accessibility_focusColor": "Fokusfarbe",
   "Prop_accessibility_focusWidth": "Fokusbreite",
   "Prop_accessibility_minTextSize": "Mindestschriftgröße",
-  "UI_WarnMissingHint": "Wenn diese Vorgesetzten in Ihrer Tabelle stehen, fehlen ihre Zeilen, weil Value für sie leer ist: Fügen Sie unter Tooltips ein Measure hinzu, das nie leer ist (zum Beispiel eine Zeilenanzahl)."
+  "UI_WarnMissingHint": "Wenn diese Vorgesetzten in Ihrer Tabelle stehen, fehlen ihre Zeilen, weil Value für sie leer ist: Fügen Sie unter Tooltips ein Measure hinzu, das nie leer ist (zum Beispiel eine Zeilenanzahl).",
+  "Obj_deptColors": "Abteilungsfarben",
+  "Prop_deptColors_fill": "Farbe"
 }

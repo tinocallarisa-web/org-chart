@@ -163,5 +163,7 @@
   "Prop_accessibility_focusColor": "포커스 색",
   "Prop_accessibility_focusWidth": "포커스 두께",
   "Prop_accessibility_minTextSize": "최소 글꼴 크기",
-  "UI_WarnMissingHint": "이 관리자가 테이블에 있다면 Value가 비어 있어 해당 행이 제외되었습니다. 비어 있지 않은 측정값(예: 행 개수)을 Tooltips에 추가하세요."
+  "UI_WarnMissingHint": "이 관리자가 테이블에 있다면 Value가 비어 있어 해당 행이 제외되었습니다. 비어 있지 않은 측정값(예: 행 개수)을 Tooltips에 추가하세요.",
+  "Obj_deptColors": "부서 색상",
+  "Prop_deptColors_fill": "색"
 }

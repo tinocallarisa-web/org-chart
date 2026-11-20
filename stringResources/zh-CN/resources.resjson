@@ -163,5 +163,7 @@
   "Prop_accessibility_focusColor": "焦点颜色",
   "Prop_accessibility_focusWidth": "焦点宽度",
   "Prop_accessibility_minTextSize": "最小文本大小",
-  "UI_WarnMissingHint": "如果这些经理在你的表中,他们的行因 Value 为空而被排除:请在 Tooltips 中添加一个从不为空的度量值(例如行数)。"
+  "UI_WarnMissingHint": "如果这些经理在你的表中,他们的行因 Value 为空而被排除:请在 Tooltips 中添加一个从不为空的度量值(例如行数)。",
+  "Obj_deptColors": "部门颜色",
+  "Prop_deptColors_fill": "颜色"
 }

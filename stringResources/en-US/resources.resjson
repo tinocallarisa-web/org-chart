@@ -163,5 +163,7 @@
   "Prop_accessibility_focusColor": "Focus color",
   "Prop_accessibility_focusWidth": "Focus width",
   "Prop_accessibility_minTextSize": "Minimum text size",
-  "UI_WarnMissingHint": "If those managers are in your table, their rows were left out because Value is blank for them: add a measure that is never blank (for example a count of rows) to Tooltips."
+  "UI_WarnMissingHint": "If those managers are in your table, their rows were left out because Value is blank for them: add a measure that is never blank (for example a count of rows) to Tooltips.",
+  "Obj_deptColors": "Department colors",
+  "Prop_deptColors_fill": "Color"
 }

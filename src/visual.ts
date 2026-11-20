@@ -197,6 +197,8 @@ export class Visual implements IVisual {
     private dataKey = "";
     private layoutKey = "";
     private deptColors = new Map<string, string>();
+    /** Departamentos con el selector de su primera fila: la tarjeta Department colors guarda un color por departamento. */
+    private deptSlots: { dept: string; selector: any }[] = [];
     private hasHighlights = false;
     private fmtValue: (v: any) => string = (v) => String(v ?? "");
     private valueName = "";
@@ -528,7 +530,16 @@ export class Visual implements IVisual {
         const depts: string[] = [];
         for (const p of this.people.values()) if (p.dept && depts.indexOf(p.dept) < 0) depts.push(p.dept);
         const dc = this.groupColors(depts);
-        this.deptColors = new Map(depts.map((d, i) => [d, dc[i]]));
+        // Color elegido a mano en Department colors (1.1): manda sobre la paleta y el estilo.
+        const first = new Map<string, number>();
+        if (deptC) deptC.values.forEach((v, i) => { const d = str(v); if (d && !first.has(d)) first.set(d, i); });
+        this.deptSlots = [];
+        this.deptColors = new Map(depts.map((d, i) => {
+            const row = first.get(d);
+            const own = row !== undefined ? (deptC?.objects?.[row]?.["deptColors"]?.["fill"] as any)?.solid?.color : undefined;
+            if (row !== undefined && deptC) this.deptSlots.push({ dept: d, selector: this.host.createSelectionIdBuilder().withCategory(deptC, row).createSelectionId().getSelector() });
+            return [d, own || dc[i]];
+        }));
 
         // Estado guardado: al abrir el informe o al aplicar un marcador llega distinto del último escrito.
         const raw = dv.metadata?.objects?.["state"]?.["view"] as string | undefined;
@@ -1562,6 +1573,15 @@ export class Visual implements IVisual {
                     col("colors", "lowColor", "Low color", s.lowColor), col("colors", "highColor", "High color", s.highColor),
                     col("colors", "background", "Background", s.background),
                 ]),
+                ...(this.deptSlots.length ? [{
+                    uid: "deptColors_card", displayName: T("Obj_deptColors", "Department colors"),
+                    groups: [{ uid: "deptColors_g", displayName: "", slices: this.deptSlots.slice(0, 60).map((d, i) => ({
+                        uid: "deptColors_fill_" + i, displayName: d.dept,
+                        control: { type: powerbi.visuals.FormattingComponent.ColorPicker, properties: {
+                            descriptor: { objectName: "deptColors", propertyName: "fill", selector: d.selector },
+                            value: { value: this.deptColors.get(d.dept) || "" } } },
+                    })) }],
+                }] : []),
                 card("toolbar", "Toolbar", [
                     tog("toolbar", "show", "Show toolbar", s.toolbar), tog("toolbar", "search", "Search", s.search),
                     tog("toolbar", "minimap", "Minimap", s.minimap), tog("toolbar", "breadcrumb", "Breadcrumb", s.breadcrumb),

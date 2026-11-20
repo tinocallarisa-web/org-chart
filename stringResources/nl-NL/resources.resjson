@@ -163,5 +163,7 @@
   "Prop_accessibility_focusColor": "Focuskleur",
   "Prop_accessibility_focusWidth": "Focusdikte",
   "Prop_accessibility_minTextSize": "Minimale tekstgrootte",
-  "UI_WarnMissingHint": "Als deze managers in uw tabel staan, zijn hun rijen weggelaten omdat Value voor hen leeg is: voeg aan Tooltips een meting toe die nooit leeg is (bijvoorbeeld een aantal rijen)."
+  "UI_WarnMissingHint": "Als deze managers in uw tabel staan, zijn hun rijen weggelaten omdat Value voor hen leeg is: voeg aan Tooltips een meting toe die nooit leeg is (bijvoorbeeld een aantal rijen).",
+  "Obj_deptColors": "Afdelingskleuren",
+  "Prop_deptColors_fill": "Kleur"
 }

@@ -163,5 +163,7 @@
   "Prop_accessibility_focusColor": "Cor do foco",
   "Prop_accessibility_focusWidth": "Espessura do foco",
   "Prop_accessibility_minTextSize": "Tamanho mínimo do texto",
-  "UI_WarnMissingHint": "Se esses gestores estão na sua tabela, as linhas deles ficaram de fora porque Value está em branco para eles: adicione em Tooltips uma medida que nunca fique em branco (por exemplo, uma contagem de linhas)."
+  "UI_WarnMissingHint": "Se esses gestores estão na sua tabela, as linhas deles ficaram de fora porque Value está em branco para eles: adicione em Tooltips uma medida que nunca fique em branco (por exemplo, uma contagem de linhas).",
+  "Obj_deptColors": "Cores por departamento",
+  "Prop_deptColors_fill": "Cor"
 }
